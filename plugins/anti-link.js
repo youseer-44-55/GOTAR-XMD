@@ -13,42 +13,32 @@ cmd({
   reply
 }) => {
   try {
-    // Initialize warnings if not exists
-    if (!global.warnings) {
-      global.warnings = {};
-    }
+    if (!global.warnings) global.warnings = {};
 
-    // Only act in groups where bot is admin and sender isn't admin
-    if (!isGroup || isAdmins || !isBotAdmins) {
-      return;
-    }
+    if (!isGroup || isAdmins || !isBotAdmins) return;
 
-    // List of link patterns to detect
     const linkPatterns = [
-      /https?:\/\/(?:chat\.whatsapp\.com|wa\.me)\/\S+/gi, // WhatsApp links
-      /https?:\/\/(?:api\.whatsapp\.com|wa\.me)\/\S+/gi,  // WhatsApp API links
-      /wa\.me\/\S+/gi,                                    // WhatsApp.me links
-      /https?:\/\/(?:t\.me|telegram\.me)\/\S+/gi,         // Telegram links
-      /https?:\/\/(?:www\.)?\.com\/\S+/gi,                // Generic .com links
-      /https?:\/\/(?:www\.)?twitter\.com\/\S+/gi,         // Twitter links
-      /https?:\/\/(?:www\.)?linkedin\.com\/\S+/gi,        // LinkedIn links
-      /https?:\/\/(?:whatsapp\.com|channel\.me)\/\S+/gi,  // Other WhatsApp/channel links
-      /https?:\/\/(?:www\.)?reddit\.com\/\S+/gi,          // Reddit links
-      /https?:\/\/(?:www\.)?discord\.com\/\S+/gi,         // Discord links
-      /https?:\/\/(?:www\.)?twitch\.tv\/\S+/gi,           // Twitch links
-      /https?:\/\/(?:www\.)?vimeo\.com\/\S+/gi,           // Vimeo links
-      /https?:\/\/(?:www\.)?dailymotion\.com\/\S+/gi,     // Dailymotion links
-      /https?:\/\/(?:www\.)?medium\.com\/\S+/gi           // Medium links
+      /https?:\/\/(?:chat\.whatsapp\.com|wa\.me)\/\S+/gi,
+      /https?:\/\/(?:api\.whatsapp\.com|wa\.me)\/\S+/gi,
+      /wa\.me\/\S+/gi,
+      /https?:\/\/(?:t\.me|telegram\.me)\/\S+/gi,
+      /https?:\/\/(?:www\.)?\.com\/\S+/gi,
+      /https?:\/\/(?:www\.)?twitter\.com\/\S+/gi,
+      /https?:\/\/(?:www\.)?linkedin\.com\/\S+/gi,
+      /https?:\/\/(?:whatsapp\.com|channel\.me)\/\S+/gi,
+      /https?:\/\/(?:www\.)?reddit\.com\/\S+/gi,
+      /https?:\/\/(?:www\.)?discord\.com\/\S+/gi,
+      /https?:\/\/(?:www\.)?twitch\.tv\/\S+/gi,
+      /https?:\/\/(?:www\.)?vimeo\.com\/\S+/gi,
+      /https?:\/\/(?:www\.)?dailymotion\.com\/\S+/gi,
+      /https?:\/\/(?:www\.)?medium\.com\/\S+/gi
     ];
 
-    // Check if message contains any forbidden links
     const containsLink = linkPatterns.some(pattern => pattern.test(body));
 
-    // Only proceed if anti-link is enabled and link is detected
     if (containsLink && config.ANTI_LINK === 'true') {
       console.log(`Link detected from ${sender}: ${body}`);
 
-      // Try to delete the message
       try {
         await conn.sendMessage(from, {
           delete: m.key
@@ -58,27 +48,26 @@ cmd({
         console.error("Failed to delete message:", error);
       }
 
-      // Update warning count for user
       global.warnings[sender] = (global.warnings[sender] || 0) + 1;
       const warningCount = global.warnings[sender];
 
-      // Handle warnings
       if (warningCount < 4) {
-        // Send warning message
         await conn.sendMessage(from, {
-          text: `‎*⚠️LINKS ARE NOT ALLOWED⚠️*\n` +
-                `*╭────⬡ WARNING ⬡────*\n` +
-                `*├▢ USER :* @${sender.split('@')[0]}!\n` +
-                `*├▢ COUNT : ${warningCount}*\n` +
-                `*├▢ REASON : LINK SENDING*\n` +
-                `*├▢ WARN LIMIT : 3*\n` +
-                `*╰────────────────*`,
+          text:
+`📛 *تحذيــــــر من البوت* 📛
+
+╭─────⎈─────╮
+├👤 *العضو:* @${sender.split('@')[0]}
+├⚠️ *العدد:* ${warningCount} من 3
+├📎 *السبب:* بعت لينك وانت عارف انه ممنوع 💢
+╰─────⎈─────╯
+
+✋ خلي بالك يا نجم، البوت مش بيهزر.`,
           mentions: [sender]
         });
       } else {
-        // Remove user if they exceed warning limit
         await conn.sendMessage(from, {
-          text: `@${sender.split('@')[0]} *HAS BEEN REMOVED - WARN LIMIT EXCEEDED!*`,
+          text: `@${sender.split('@')[0]} ☠️ انت اتجاوزت الحدود يا نجم\n💣 عمك لوسيفر طردك عشان بتبعت لينكات 😂✌️`,
           mentions: [sender]
         });
         await conn.groupParticipantsUpdate(from, [sender], "remove");
@@ -87,6 +76,6 @@ cmd({
     }
   } catch (error) {
     console.error("Anti-link error:", error);
-    reply("❌ An error occurred while processing the message.");
+    reply("❌ في حاجه حصلت وانا بتعامل مع اللينك، جرب تاني بعدين 😅");
   }
 });

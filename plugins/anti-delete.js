@@ -5,17 +5,17 @@ const { getAnti, setAnti, initializeAntiDeleteSettings } = require('../data/anti
 initializeAntiDeleteSettings();
 
 cmd({
-    pattern: "antidelete",
+    pattern: "منع-حذف-الرساله", // الاسم الحقيقي للأمر (ما يتغيرش)
     alias: ['antidel', 'antid'],
-    desc: "Configure le système AntiDelete",
+    desc: "منع حذف الرسائل في الجروبات والخاص",
     category: "misc",
     filename: __filename
 },
 async (conn, mek, m, { reply, q, isOwner }) => {
     if (!isOwner) {
-      return await client.sendMessage(from, {
-        text: "*📛 This is an owner command.*"
-      }, { quoted: message });
+      return await conn.sendMessage(m.chat, {
+        text: "انت مش المطور يا حته 🤫🥂"
+      }, { quoted: m });
     }
     try {
         const command = q?.toLowerCase();
@@ -24,48 +24,41 @@ async (conn, mek, m, { reply, q, isOwner }) => {
             case 'on':
                 await setAnti('gc', true);
                 await setAnti('dm', true);
-                return reply('_AntiDelete activé pour les groupes et messages privés._');
+                return reply('🛡️ منع الحذف اشتغل يا معلم فـ الجروبات والخاص 💪🔥');
 
             case 'off gc':
                 await setAnti('gc', false);
-                return reply('_AntiDelete désactivé pour les groupes._');
+                return reply('❌ وقفنا منع الحذف في الجروبات خلاص 💤');
 
             case 'off dm':
                 await setAnti('dm', false);
-                return reply('_AntiDelete désactivé pour les messages privés._');
+                return reply('❌ خلاص خاصك بقى من غير منع حذف 😴');
 
             case 'set gc':
                 const gcStatus = await getAnti('gc');
                 await setAnti('gc', !gcStatus);
-                return reply(`_AntiDelete groupe maintenant ${!gcStatus ? 'activé' : 'désactivé'}._`);
+                return reply(`🔁 منع الحذف في الجروبات دلوقتي ${!gcStatus ? 'شغال 💪' : 'مقفول 🚫'}`);
 
             case 'set dm':
                 const dmStatus = await getAnti('dm');
                 await setAnti('dm', !dmStatus);
-                return reply(`_AntiDelete DM maintenant ${!dmStatus ? 'activé' : 'désactivé'}._`);
+                return reply(`🔁 منع الحذف في الخاص دلوقتي ${!dmStatus ? 'شغال ✨' : 'مقفول 📴'}`);
 
             case 'set all':
                 await setAnti('gc', true);
                 await setAnti('dm', true);
-                return reply('_AntiDelete activé pour tous les chats._');
+                return reply('🚀 فعلنا منع الحذف في كل الشاتات يا ريس 💼🛡️');
 
             case 'status':
                 const currentDmStatus = await getAnti('dm');
                 const currentGcStatus = await getAnti('gc');
-                return reply(`_Statut AntiDelete_\n\n*DM:* ${currentDmStatus ? 'Activé' : 'Désactivé'}\n*Groupes:* ${currentGcStatus ? 'Activé' : 'Désactivé'}`);
+                return reply(`📊 حالة منع الحذف حاليًا:\n\n📩 خاص: ${currentDmStatus ? 'شغال ✨' : 'مقفول 📴'}\n👥 جروبات: ${currentGcStatus ? 'شغال 💪' : 'مقفول 🚫'}`);
 
             default:
-                return reply(`-- *Guide des commandes AntiDelete* --
-• \`\`.antidelete on\`\` – Active AntiDelete globalement
-• \`\`.antidelete off gc\`\` – Desactivate for group
-• \`\`.antidelete off dm\`\` – Desactivat for DM
-• \`\`.antidelete set gc\`\` – Activate/Desactivate for groups
-• \`\`.antidelete set dm\`\` – Activate/Desactivate for DM
-• \`\`.antidelete set all\`\` – Activate for all chats
-• \`\`.antidelete status\`\` – Vérifie le statut actuel`);
+                return reply(`📘 دليل استخدام منع الحذف:\n\n• \`منع-حذف-الرساله on\` – تشغيله في الكل\n• \`منع-حذف-الرساله off gc\` – قفله في الجروبات\n• \`منع-حذف-الرساله off dm\` – قفله في الخاص\n• \`منع-حذف-الرساله set gc\` – تبديل حالته في الجروبات\n• \`منع-حذف-الرساله set dm\` – تبديل حالته في الخاص\n• \`منع-حذف-الرساله set all\` – تشغيله في كله\n• \`منع-حذف-الرساله status\` – تشوف حالته دلوقتي`);
         }
     } catch (e) {
         console.error("Erreur antidelete:", e);
-        return reply("Une erreur est survenue.");
+        return reply("🥴 حصلت حاجه غريبة.. جرب تاني بعد شوية!");
     }
 });

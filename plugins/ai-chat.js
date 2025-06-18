@@ -64,7 +64,7 @@ cmd({
     alias: ["deep", "seekai"],
     desc: "Chat with DeepSeek AI",
     category: "ai",
-    react: "🧠",
+    react: "🐋",
     filename: __filename
 },
 async (conn, mek, m, { from, args, q, reply, react }) => {

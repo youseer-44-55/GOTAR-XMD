@@ -1,99 +1,62 @@
 const config = require('../config');
-
 const { cmd } = require('../command');
 
 const stylizedChars = {
-
     a: '🅐', b: '🅑', c: '🅒', d: '🅓', e: '🅔', f: '🅕', g: '🅖',
-
     h: '🅗', i: '🅘', j: '🅙', k: '🅚', l: '🅛', m: '🅜', n: '🅝',
-
     o: '🅞', p: '🅟', q: '🅠', r: '🅡', s: '🅢', t: '🅣', u: '🅤',
-
     v: '🅥', w: '🅦', x: '🅧', y: '🅨', z: '🅩',
-
     '0': '⓿', '1': '➊', '2': '➋', '3': '➌', '4': '➍',
-
     '5': '➎', '6': '➏', '7': '➐', '8': '➑', '9': '➒'
-
 };
 
 cmd({
-
-    pattern: "chr",
-
-    alias: ["creact"],
-
+    pattern: "رياكت",
+    alias: ["ch", "react"],
     react: "🔤",
-
-    desc: "React to channel messages with stylized text",
-
+    desc: "رياكت على منشور قناة بنص مزخرف",
     category: "owner",
-
-    use: '.chr <channel-link> <text>',
-
+    use: '.رياكت <لينك-المنشور> <النص>',
     filename: __filename
-
 },
-
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
-
+async (conn, m, { reply, q, command, isOwner }) => {
     try {
+        if (!isOwner) return reply("✋ دا أمر للمطور بس يا نجم 💀");
 
-        if (!isOwner) return reply("❌ Owner only command");
-
-        if (!q) return reply(`Usage:\n${command} https://whatsapp.com/channel/1234567890 hello`);
+        if (!q) return reply(`✍️ الاستخدام:\n${command} https://whatsapp.com/channel/1234567890/text`);
 
         const [link, ...textParts] = q.split(' ');
 
-        if (!link.includes("whatsapp.com/channel/")) return reply("Invalid channel link format");
-
-        
+        if (!link.includes("whatsapp.com/channel/")) return reply("📛 لينك القناة مش صح!");
 
         const inputText = textParts.join(' ').toLowerCase();
+        if (!inputText) return reply("✏️ اكتب النص اللي عايز تعمله رياكت");
 
-        if (!inputText) return reply("Please provide text to convert");
+        const emoji = inputText.split('').map(char => {
+            if (char === ' ') return '―';
+            return stylizedChars[char] || char;
+        }).join('');
 
-        const emoji = inputText
+        const parts = link.split('/');
+        const channelId = parts[4];
+        const messageId = parts[5];
 
-            .split('')
-
-            .map(char => {
-
-                if (char === ' ') return '―';
-
-                return stylizedChars[char] || char;
-
-            })
-
-            .join('');
-
-        const channelId = link.split('/')[4];
-
-        const messageId = link.split('/')[5];
-
-        if (!channelId || !messageId) return reply("Invalid link - missing IDs");
+        if (!channelId || !messageId) return reply("❌ لينك ناقص! محتاج ID القناة والمنشور.");
 
         const channelMeta = await conn.newsletterMetadata("invite", channelId);
 
         await conn.newsletterReactMessage(channelMeta.id, messageId, emoji);
 
-        return reply(`╭━━〔 *𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃* 〕━┈⊷
-┃▸ *Success!* Reaction sent
-┃▸ *Channel:* ${channelMeta.name}
-┃▸ *Reaction:* ${emoji}
+        return reply(`╭━━〔 *⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠* 〕━┈⊷
+┃▸ *تم الرّياكت بنجاح ✅*
+┃▸ *القناة:* ${channelMeta.name}
+┃▸ *الرياكت:* ${emoji}
 ╰────────────────┈⊷
 
-> *© ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*`);
+> *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪*`);
 
     } catch (e) {
-
         console.error(e);
-
-        reply(`❎ Error: ${e.message || "Failed to send reaction"}`);
-
+        reply(`❌ حصل خطأ أثناء الرّياكت:\n${e.message || "Unknown error"}`);
     }
-
 });
-
-// *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴅʏʙʏ ᴛᴇᴄʜ* 

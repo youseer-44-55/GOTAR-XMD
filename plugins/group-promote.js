@@ -1,44 +1,44 @@
-const { cmd } = require('../command');
+const { cmd } = require('../command');  
+  
+cmd({  
+    pattern: "ارفع",  
+    alias: ["مشرف", "makeadmin"],  
+    desc: "ترقية عضو لمرتبة مشرف في الجروب",  
+    category: "group",  
+    react: "⬆️",  
+    filename: __filename  
+},  
+async(conn, mek, m, {  
+    from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isCreator, isDev, isAdmins, reply  
+}) => {  
+    // تأكد إذا كان الأمر في جروب  
+    if (!isGroup) return reply("❌ يا باشا ده بس في الجروبات، مش في الشات العادي 😂.");
 
-cmd({
-    pattern: "promote",
-    alias: ["p", "makeadmin"],
-    desc: "Promotes a member to group admin",
-    category: "group",
-    react: "⬆️",
-    filename: __filename
-},
-async(conn, mek, m, {
-    from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isCreator, isDev, isAdmins, reply
-}) => {
-    // Check if the command is used in a group
-    if (!isGroup) return reply("❌ This command can only be used in groups.");
+    // تأكد إذا كان المستخدم أدمن في الجروب  
+    if (!isAdmins) return reply("❌ مش بسمع غير كلام المشرفين، يعني لازم تكون مشرف عشان تستخدم الأمر ده 💪.");
 
-    // Check if the user is an admin
-    if (!isAdmins) return reply("❌ Only group admins can use this command.");
+    // تأكد إذا كان البوت نفسه مشرف  
+    if (!isBotAdmins) return reply("❌ يا عم البوت مش مشرف، إزاي أرقّي غيري وأنا مش في الرول؟ 🙄");
 
-    // Check if the bot is an admin
-    if (!isBotAdmins) return reply("❌ I need to be an admin to use this command.");
+    let number;  
+    if (m.quoted) {  
+        number = m.quoted.sender.split("@")[0]; // لو رد على رسالة، خد رقم المرسل  
+    } else if (q && q.includes("@")) {  
+        number = q.replace(/[@\s]/g, ''); // لو كتبت الرقم يدوي  
+    } else {  
+        return reply("❌ رد على رسالة أو بعتلي رقم عشان أرقّي، مش كده مش هينفع 😎.");  
+    }  
+  
+    // لو حاولت ترقي البوت نفسه  
+    if (number === botNumber) return reply("❌ مفيش ترقيه للبوت، يعني مش هنرفعه عشان يعمل معانا الشو 😂.");
 
-    let number;
-    if (m.quoted) {
-        number = m.quoted.sender.split("@")[0]; // If replying to a message, get the sender's number
-    } else if (q && q.includes("@")) {
-        number = q.replace(/[@\s]/g, ''); // If manually typing a number
-    } else {
-        return reply("❌ Please reply to a message or provide a number to promote.");
-    }
-
-    // Prevent promoting the bot itself
-    if (number === botNumber) return reply("❌ The bot cannot promote itself.");
-
-    const jid = number + "@s.whatsapp.net";
-
-    try {
-        await conn.groupParticipantsUpdate(from, [jid], "promote");
-        reply(`✅ Successfully promoted @${number} to admin.`, { mentions: [jid] });
-    } catch (error) {
-        console.error("Promote command error:", error);
-        reply("❌ Failed to promote the member.");
-    }
+    const jid = number + "@s.whatsapp.net";  
+  
+    try {  
+        await conn.groupParticipantsUpdate(from, [jid], "promote");  
+        reply(`✅ **واااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااااا** @${number} بقى مشرف 🎉🔥، قولي بقى إيه رأيك؟ 😎💥`, { mentions: [jid] });  
+    } catch (error) {  
+        console.error("Promote command error:", error);  
+        reply("❌ **أوف فشلنا** في ترقيه العضو ده، حاول تاني ياباشا 😉.");  
+    }  
 });

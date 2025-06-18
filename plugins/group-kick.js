@@ -1,24 +1,25 @@
 const { cmd } = require('../command');
 
 cmd({
-    pattern: "remove",
-    alias: ["kick", "kicks"],
-    desc: "Removes a member from the group",
+    pattern: "انطر",
+    alias: ["k", "انطر-العرص-دا"],
+    desc: "يطرد عضو من الجروب",
     category: "admin",
-    react: "❌",
+    react: "🍆",
     filename: __filename
 },
 async (conn, mek, m, {
     from, q, isGroup, isBotAdmins, isOwner, reply, quoted, senderNumber
 }) => {
-    // Must be used in a group
-    if (!isGroup) return reply("❌ This command can only be used in groups.");
 
-    // Only bot owner can use this command
-    if (!isOwner) return reply("❌ Only the bot owner can use this command.");
+    // لازم يكون في جروب
+    if (!isGroup) return reply("الامر دا للجروبات بس يا رجولة 🙄");
 
-    // Bot must be admin
-    if (!isBotAdmins) return reply("❌ I need to be an admin to use this command.");
+    // بس المطور يقدر يستخدمه
+    if (!isOwner) return reply("دا للمطور بس يا علق 😂😏");
+
+    // البوت لازم يكون ادمن
+    if (!isBotAdmins) return reply("ارفعني ادمن الأول يا حلو وبعدها اتفرج 😂🤖");
 
     let number;
     if (m.quoted) {
@@ -26,16 +27,16 @@ async (conn, mek, m, {
     } else if (q && q.includes("@")) {
         number = q.replace(/[@\s]/g, '');
     } else {
-        return reply("❌ Please reply to a message or mention a user to remove.");
+        return reply("رد على رسالة العضو اللي عايز تنطره أو منشنه يا قلب لوسيفر 🖤.");
     }
 
     const jid = number + "@s.whatsapp.net";
 
     try {
         await conn.groupParticipantsUpdate(from, [jid], "remove");
-        reply(`✅ Successfully removed @${number}`, { mentions: [jid] });
+        reply(`نطرت العلق برا الجروب بعد ما نطرتهم في ✈️😂 @${number}`, { mentions: [jid] });
     } catch (error) {
         console.error("Remove command error:", error);
-        reply("❌ Failed to remove the member.");
+        reply("حصلت مشكلة يا نجم، جرب كمان شويه ✋😅");
     }
 });

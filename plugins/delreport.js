@@ -3,47 +3,47 @@ const fs = require("fs");
 const path = require("path");
 
 cmd({
-    pattern: "deletereport",
-    alias: ["delreport", "delreport"],
-    desc: "Delete a specific report by its index",
+    pattern: "مسح-بلاغ",
+    alias: ["deletereport", "delreport", "مسحبلاغ"],
+    desc: "يمسح بلاغ حسب رقمه ✍🏻",
     category: "owner",
-    react: ["🗑"],
+    react: ["🗑️"],
     filename: __filename,
-    use: "<report number>"
+    use: ".مسح-بلاغ <رقم البلاغ>"
 }, async (conn, m, msg, { args, reply }) => {
     try {
-        const devNumbers = ["50934960331", "18494967948", "50948702213"];
-        const senderId = m.sender.split("@")[0];
-        const reportPath = path.join(__dirname, "../data/reports.json");
+        const المطورين = ["201501728150", "201226943082"];
+        const رقم_المرسل = m.sender.split("@")[0];
+        const مسار_الملف = path.join(__dirname, "../data/reports.json");
 
-        if (!devNumbers.includes(senderId)) {
-            return reply("❌ Only developers can use this command.");
+        if (!المطورين.includes(رقم_المرسل)) {
+            return reply("✋🏼 مش ليك يابا.. الأمر دا للمطورين بس 🔒");
         }
 
-        if (!fs.existsSync(reportPath)) {
-            return reply("❌ No report file found.");
+        if (!fs.existsSync(مسار_الملف)) {
+            return reply("📁 مفيش أي بلاغات محفوظة.");
         }
 
         const index = parseInt(args[0]);
         if (isNaN(index) || index < 1) {
-            return reply("❌ Please provide a valid report number (e.g. `.deletereport 2`)");
+            return reply("❌ اكتب رقم بلاغ صحيح يا معلم (مثال: .مسح-بلاغ 1)");
         }
 
-        const reports = JSON.parse(fs.readFileSync(reportPath));
+        const البلاغات = JSON.parse(fs.readFileSync(مسار_الملف));
 
-        if (index > reports.length) {
-            return reply(`❌ There are only ${reports.length} reports.`);
+        if (index > البلاغات.length) {
+            return reply(`📄 عندك بس ${بلاغات.length} بلاغ(ات).. اختار رقم صح.`);
         }
 
-        const removed = reports.splice(index - 1, 1)[0];
-        fs.writeFileSync(reportPath, JSON.stringify(reports, null, 2));
+        const المحذوف = البلاغات.splice(index - 1, 1)[0];
+        fs.writeFileSync(مسار_الملف, JSON.stringify(بلاغات, null, 2));
 
-        reply(`✅ Deleted report #${index}:\n\n@${removed.user}\n🕒 ${removed.time}\n📩 ${removed.message}`, null, {
-            mentions: [`${removed.user}@s.whatsapp.net`]
+        reply(`✅ *تم حذف البلاغ رقم ${index} بنجاح:*\n\n👤 @${محذوف.user}\n🕒 ${محذوف.time}\n📩 ${محذوف.message}`, null, {
+            mentions: [`${محذوف.user}@s.whatsapp.net`]
         });
 
     } catch (err) {
-        console.error("Error deleting report:", err);
-        reply("❌ Failed to delete the report.");
+        console.error("خطأ أثناء حذف البلاغ:", err);
+        reply("❌ حصلت مشكلة وأنا بحذف البلاغ. جرب تاني.");
     }
 });

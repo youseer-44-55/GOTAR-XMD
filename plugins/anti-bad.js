@@ -1,7 +1,7 @@
 const { cmd } = require('../command');
 const config = require("../config");
 
-// Anti-Bad Words System
+// نظام منع الألفاظ الوحشة 🛑
 cmd({
   'on': "body"
 }, async (conn, m, store, {
@@ -14,21 +14,37 @@ cmd({
   sender
 }) => {
   try {
-    const badWords = ["wtf", "mia", "xxx", "fuck", 'sex', "huththa", "pakaya", 'ponnaya', "hutto"];
+    const badWords = [
+      "wtf", "mia", "xxx", "fuck", "sex",
+      "huththa", "pakaya", "ponnaya", "hutto",
+      "كس", "زب", "نيك", "متناك", "طيز", "خول", "عرص", "قحبة", "يلعن"
+    ];
 
-    if (!isGroup || isAdmins || !isBotAdmins) {
-      return;
-    }
+    if (!isGroup || isAdmins || !isBotAdmins) return;
 
     const messageText = body.toLowerCase();
     const containsBadWord = badWords.some(word => messageText.includes(word));
 
     if (containsBadWord && config.ANTI_BAD_WORD === "true") {
-      await conn.sendMessage(from, { 'delete': m.key }, { 'quoted': m });
-      await conn.sendMessage(from, { 'text': "🚫 ⚠️ BAD WORDS NOT ALLOWED ⚠️ 🚫" }, { 'quoted': m });
+      // امسح الرسالة بسرعة
+      await conn.sendMessage(from, { delete: m.key });
+
+      // ابعتله تحذير بصيغة مصرية شعبية
+      await conn.sendMessage(from, {
+        text:
+`🚫 *تحذيـــــر يا زعيم* 🚫
+
+╭───✧───────╮
+├👤 *العضو:* @${sender.split('@')[0]}
+├📛 *السبب:* ألفاظ مش محترمة 👊
+╰───✧───────╯
+
+🧼 خلي لسانك نضيف يا نجم.. مش هنسمح بقلة الأدب هنا 😒`,
+        mentions: [sender]
+      });
     }
   } catch (error) {
     console.error(error);
-    reply("An error occurred while processing the message.");
+    reply("حصلت مشكلة وإحنا بنشوف الألفاظ، جرب تاني 😅");
   }
 });

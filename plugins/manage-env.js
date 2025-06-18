@@ -12,137 +12,140 @@ const { writeFileSync } = require('fs');
 const path = require('path');
 
 cmd({
-    pattern: "admin-events",
+    pattern: "اشعار-ادمان",
     alias: ["adminevents"],
-    desc: "Enable or disable admin event notifications",
+    desc: "تشغيل أو تعطيل اشعارات دخول وخروج الأدمنية",
     category: "settings",
     filename: __filename
 },
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("👮‍♂️ مش بسمع غير كلام عمك لوسيفر يا حب، ملكش صلاحية للأمر ده");
 
     const status = args[0]?.toLowerCase();
+
     if (status === "on") {
         config.ADMIN_EVENTS = "true";
-        return reply("✅ Admin event notifications are now enabled.");
+        return reply(`✅ اشعارات دخول وخروج الأدمنية اتفعلت يا وحش 💀\nأي حد هيرفع أو ينزل، البوت هيبلغ 👀`);
     } else if (status === "off") {
         config.ADMIN_EVENTS = "false";
-        return reply("❌ Admin event notifications are now disabled.");
+        return reply(`❌ اشعارات الأدمنية اتقفلت خلاص 🤫\nمش هيقول لمين دخل ومين خرج ✋`);
     } else {
-        return reply(`Example: .admin-events on`);
+        return reply(`💡 مثال يا حب:\n*.admin-events on*\n👆 عشان تفعل\n*.admin-events off*\n👆 عشان توقف`);
     }
 });
 
 cmd({
-    pattern: "welcome",
+    pattern: "ترحيب",
     alias: ["welcomeset"],
-    desc: "Enable or disable welcome messages for new members",
+    desc: "تشغيل أو تعطيل رسائل الترحيب بالأعضاء الجدد",
     category: "settings",
     filename: __filename
 },
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر والمساعدين بتوعه 🤫");
 
     const status = args[0]?.toLowerCase();
+
     if (status === "on") {
         config.WELCOME = "true";
-        return reply("✅ Welcome messages are now enabled.");
+        return reply("✅ الترحيب بالأعضاء الجداد اتفعل يا حب ✨\nالبوت هيستقبل أي ضيف جديد في الجروب 😎");
     } else if (status === "off") {
         config.WELCOME = "false";
-        return reply("❌ Welcome messages are now disabled.");
+        return reply("❌ تم قفل رسائل الترحيب ✋\nمحدش هيتهللله تاني وهو داخل 😂");
     } else {
-        return reply(`Example: .welcome on`);
+        return reply(`💡 استخدم الأمر كده يا نجم:\n*.welcome on* ← لتشغيل الترحيب\n*.welcome off* ← لقفل الترحيب`);
     }
 });
 
 cmd({
-    pattern: "setprefix",
+    pattern: "بدائيه",
     alias: ["prefix"],
     react: "🔧",
-    desc: "Change the bot's command prefix.",
+    desc: "تغيير البادئة (Prefix) بتاعة أوامر البوت.",
     category: "settings",
     filename: __filename,
 }, async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 Only the owner can use this command!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫 🖕🏻");
 
-    const newPrefix = args[0]; // Get the new prefix from the command arguments
-    if (!newPrefix) return reply("❌ Please provide a new prefix. Example: `.setprefix !`");
+    const newPrefix = args[0]; // البادئة الجديدة
+    if (!newPrefix) return reply("❌ فين البادئة يا حب؟!\nمثال: *⎔ .setprefix !*");
 
-    // Update the prefix in memory
-    config.PREFIX = newPrefix;
+    config.PREFIX = newPrefix; // تحديث البادئة في الإعدادات
 
-    return reply(`✅ Prefix successfully changed to *${newPrefix}*`);
+    return reply(`✅ تم تغيير البادئة بنجاح لـ *${newPrefix}* 🔥\nجرب أي أمر بالبادئة الجديدة وشوف السحر شغال 💀`);
 });
 
 cmd({
-    pattern: "mode",
-    alias: ["setmode"],
+    pattern: "وضع",
+    alias: ["mode"],
     react: "🫟",
-    desc: "Set bot mode to private or public.",
+    desc: "تغيير وضع البوت (برايفت / بابليك).",
     category: "settings",
     filename: __filename,
 }, async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 Only the owner can use this command!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر والمساعدين بتوعه يا نجم 🤫💀");
 
-    // Si aucun argument n'est fourni, afficher le mode actuel et l'usage
     if (!args[0]) {
-        return reply(`📌 Current mode: *${config.MODE}*\n\nUsage: .mode private OR .mode public`);
+        return reply(`👾 الوضع الحالي للبوت: *${config.MODE.toUpperCase()}*\n\nاستخدم: ⎔ .mode private\nأو: ⎔ .mode public`);
     }
 
     const modeArg = args[0].toLowerCase();
 
     if (modeArg === "private") {
         config.MODE = "private";
-        return reply("✅ Bot mode is now set to *PRIVATE*.");
+        return reply("🔒 تم تحويل البوت لوضع *برايفت*.\nمحدش هيعرف يستخدمه غيرك يا معلم 😎");
     } else if (modeArg === "public") {
         config.MODE = "public";
-        return reply("✅ Bot mode is now set to *PUBLIC*.");
+        return reply("🌐 تم تحويل البوت لوضع *بابليك*.\nسيب الناس تجرب سحر عمك لوسيفر 💀🔥");
     } else {
-        return reply("❌ Invalid mode. Please use `.mode private` or `.mode public`.");
+        return reply("❌ الوضع اللي كتبته مش مفهوم يا حب، جرب:\n⎔ .mode private\n⎔ .mode public");
     }
 });
 
 cmd({
-    pattern: "auto-typing",
-    description: "Enable or disable auto-typing feature.",
+    pattern: "كتب-تلقائي",
+    alias: ["auto-typing", "autotype"],
+    react: "✍️",
+    desc: "تشغيل أو إيقاف الكتابة التلقائية.",
     category: "settings",
     filename: __filename
-},    
+},
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يا نجم 🤫💀");
 
     const status = args[0]?.toLowerCase();
     if (!["on", "off"].includes(status)) {
-        return reply("*🫟 ᴇxᴀᴍᴘʟᴇ:  .ᴀᴜᴛᴏ-ᴛʏᴘɪɴɢ ᴏɴ*");
+        return reply("✍️ مثال: ⎔ .auto-typing on\n🔕 أو: ⎔ .auto-typing off");
     }
 
     config.AUTO_TYPING = status === "on" ? "true" : "false";
-    return reply(`Auto typing has been turned ${status}.`);
+    return reply(`✍️ تم ${status === "on" ? "*تشغيل*" : "*إيقاف*"} ميزة الكتابة التلقائية للبوت 💀🔥`);
 });
 
 //mention reply 
 
 
 cmd({
-    pattern: "mention-reply",
-    alias: ["menetionreply", "mee"],
-    description: "Set bot status to always online or offline.",
+    pattern: "رد-علي-المنشن",
+    alias: ["mention-reply", "mee", "رد-عند-المنشن"],
+    react: "📢",
+    desc: "تشغيل أو إيقاف رد البوت لما حد يعمل له منشن.",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر والمساعدين بتوعه يا حب 🤫💀");
 
     const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.MENTION_REPLY = "true";
-        return reply("Mention Reply feature is now enabled.");
-    } else if (args[0] === "off") {
+        return reply("📢 تم تشغيل ميزة الرد وقت المنشن.\nأي حد ينادي عليك هيرد عليه البوت 💀🔥");
+    } else if (status === "off") {
         config.MENTION_REPLY = "false";
-        return reply("Mention Reply feature is now disabled.");
+        return reply("🔕 تم إيقاف ميزة الرد وقت المنشن.\nالبوت مش هيرد على حد لو ندهله 😶‍🌫️");
     } else {
-        return reply(`_example:  .mee on_`);
+        return reply("📌 مثال للاستخدام:\n⎔ .mee on\n⎔ .mee off");
     }
 });
 
@@ -151,102 +154,104 @@ async (conn, mek, m, { from, args, isCreator, reply }) => {
 // ALWAYS_ONLINE COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "always-online",
-    alias: ["alwaysonline"],
-    desc: "Enable or disable the always online mode",
-    category: "settings",
-    filename: __filename
+  pattern: "اونلاين-تلقائي",
+  alias: ["alwaysonline", "اونلاين-دايم"],
+  desc: "تشغيل أو إيقاف وضع أونلاين دايم.",
+  category: "settings",
+  filename: __filename
 },
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+  if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
-    const status = args[0]?.toLowerCase();
-    if (status === "on") {
-        config.ALWAYS_ONLINE = "true";
-        await reply("*✅ always online mode is now enabled.*");
-    } else if (status === "off") {
-        config.ALWAYS_ONLINE = "false";
-        await reply("*❌ always online mode is now disabled.*");
-    } else {
-        await reply(`*🛠️ ᴇxᴀᴍᴘʟᴇ: .ᴀʟᴡᴀʏs-ᴏɴʟɪɴᴇ ᴏɴ*`);
-    }
+  const status = args[0]?.toLowerCase();
+
+  if (status === "on") {
+    config.ALWAYS_ONLINE = "true";
+    await reply("✅ *عمك لوسيفر بقا أونلاين دايم يا معلم 🔥*\nمش هينام تاني 😂💀");
+  } else if (status === "off") {
+    config.ALWAYS_ONLINE = "false";
+    await reply("❌ *الوضع الأونلاين اتقفل.*\nعمك لوسيفر أخد أجازة شوية 😴🛌");
+  } else {
+    await reply("📝 الاستخدام:\n⎔ .always-online on\n⎔ .always-online off");
+  }
 });
 
 //--------------------------------------------
 //  AUTO_RECORDING COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "auto-recording",
-    alias: ["autorecoding"],
-    description: "Enable or disable auto-recording feature.",
+    pattern: "ريكورد-تلقائي",
+    alias: ["autorecoding", "تسجيل-تلقائي"],
+    description: "تشغيل أو إيقاف وضع التسجيل التلقائي.",
     category: "settings",
     filename: __filename
-},    
+},
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
     if (!["on", "off"].includes(status)) {
-        return reply("*🫟 ᴇxᴀᴍᴘʟᴇ: .ᴀᴜᴛᴏ-ʀᴇᴄᴏʀᴅɪɴɢ ᴏɴ*");
+        return reply("📝 الاستخدام:\n⎔ .auto-recording on\n⎔ .auto-recording off");
     }
 
     config.AUTO_RECORDING = status === "on" ? "true" : "false";
+
     if (status === "on") {
         await conn.sendPresenceUpdate("recording", from);
-        return reply("Auto recording is now enabled. Bot is recording...");
+        return reply("🎙️ *وضع التسجيل اشتغل يا كلب ✍️*\nعمك لوسيفر بيسجل دلوقتي 😂💀");
     } else {
         await conn.sendPresenceUpdate("available", from);
-        return reply("Auto recording has been disabled.");
+        return reply("🛑 *وضع التسجيل اتقفل يا صاحبي ✋*\nعمك لوسيفر خلاص وقف تسجيل ✨");
     }
 });
 //--------------------------------------------
 // AUTO_VIEW_STATUS COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "auto-seen",
-    alias: ["autostatusview"],
-    desc: "Enable or disable auto-viewing of statuses",
+    pattern: "سيين-تلقائي",
+    alias: ["autostatusview", "رؤية-تلقائية"],
+    desc: "تشغيل أو إيقاف ميزة مشاهدة الحالات تلقائياً",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
-    // Default value for AUTO_VIEW_STATUS is "false"
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.AUTO_STATUS_SEEN = "true";
-        return reply("Auto-viewing of statuses is now enabled.");
-    } else if (args[0] === "off") {
+        return reply("👁️ *وضع المشاهدة التلقائية اشتغل يا كبير 🔥*\nعمك لوسيفر هيشوف كل الستوريهات ✨");
+    } else if (status === "off") {
         config.AUTO_STATUS_SEEN = "false";
-        return reply("Auto-viewing of statuses is now disabled.");
+        return reply("🛑 *وضع المشاهدة التلقائية اتقفل خلاص يا باشا ✋*\nعمك لوسيفر مش هيبص على حاجه 😂");
     } else {
-        return reply(`*🫟 ᴇxᴀᴍᴘʟᴇ:  .ᴀᴜᴛᴏ-sᴇᴇɴ ᴏɴ*`);
+        return reply("📝 الاستخدام:\n⎔ .auto-seen on\n⎔ .auto-seen off");
     }
-}); 
+});
 //--------------------------------------------
 // AUTO_LIKE_STATUS COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "status-react",
-    alias: ["statusreaction"],
-    desc: "Enable or disable auto-liking of statuses",
+    pattern: "رياكت-استوري-تلقائي",
+    alias: ["statusreaction", "تفاعل-الحالات"],
+    desc: "تشغيل أو إيقاف التفاعل التلقائي مع الحالات (الستوريهات)",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
-    // Default value for AUTO_LIKE_STATUS is "false"
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.AUTO_STATUS_REACT = "true";
-        return reply("Auto-liking of statuses is now enabled.");
-    } else if (args[0] === "off") {
+        return reply("❤️ *عمك لوسيفر هيبدأ يوزّع لايكات عالستوريهات 😂🔥*");
+    } else if (status === "off") {
         config.AUTO_STATUS_REACT = "false";
-        return reply("Auto-liking of statuses is now disabled.");
+        return reply("💤 *خلاص وقفنا التفاعل مع الستوريهات، لوسيفر مش فاضي دلوقتي 😴*");
     } else {
-        return reply(`Example: . status-react on`);
+        return reply("📝 الاستخدام:\n⎔ .status-react on\n⎔ .status-react off");
     }
 });
 
@@ -254,50 +259,50 @@ async (conn, mek, m, { from, args, isCreator, reply }) => {
 //  READ-MESSAGE COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "read-message",
-    alias: ["autoread"],
-    desc: "enable or disable readmessage.",
+    pattern: "قراءة-الرسائل",
+    alias: ["autoread", "قراءة-الرسائل"],
+    desc: "تشغيل أو إيقاف قراءة الرسائل تلقائيًا",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.READ_MESSAGE = "true";
-        return reply("readmessage feature is now enabled.");
-    } else if (args[0] === "off") {
+        return reply("📩 *تمام يا كبير، لوسيفر هيبدأ يقرا كل رسالة توصله زي المحقق كونان 😂🔍*");
+    } else if (status === "off") {
         config.READ_MESSAGE = "false";
-        return reply("readmessage feature is now disabled.");
+        return reply("🙈 *وقفنا قراءة الرسائل، عمك لوسيفر مش فاضي لكل شوية طقة 💀*");
     } else {
-        return reply(`_example:  .readmessage on_`);
+        return reply("📝 الاستخدام:\n⎔ .read-message on\n⎔ .read-message off");
     }
 });
 
 // AUTO_VOICE
 
 cmd({
-    pattern: "auto-voice",
-    alias: ["autovoice"],
-    desc: "enable or disable readmessage.",
+    pattern: "فويس-تلقائي",
+    alias: ["autovoice", "صوت-تلقائي"],
+    desc: "تشغيل أو إيقاف تحويل الرسائل لصوت تلقائيًا",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.AUTO_VOICE = "true";
-        return reply("AUTO_VOICE feature is now enabled.");
-    } else if (args[0] === "off") {
+        return reply("🎤 *تمام يا كبير، كل رسالة هتتقال بصوت بصوتك بقى ولا صوتي؟ 😂🔊*");
+    } else if (status === "off") {
         config.AUTO_VOICE = "false";
-        return reply("AUTO_VOICE feature is now disabled.");
+        return reply("🤐 *وقفنا الصوت التلقائي، لوسيفر مش هيقول ولا كلمة دلوقتي 💀*");
     } else {
-        return reply(`_example:  .autovoice on_`);
+        return reply("📝 الاستخدام:\n⎔ .auto-voice on\n⎔ .auto-voice off");
     }
 });
 
@@ -306,127 +311,127 @@ async (conn, mek, m, { from, args, isCreator, reply }) => {
 //  ANI-BAD COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "anti-bad",
-    alias: ["antibadword"],
-    desc: "enable or disable antibad.",
+    pattern: "نظام-منع-الشتايم",
+    alias: ["antibadword", "منع-الشتيمة"],
+    desc: "تشغيل أو إيقاف ميزة منع الألفاظ الوحشة",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.ANTI_BAD_WORD = "true";
-        return reply("*anti bad word is now enabled.*");
-    } else if (args[0] === "off") {
+        return reply("🧼 *تم تشغيل نظام غسيل الألسنة... أي شتيمة وهتتاخد على دماغك 😂*");
+    } else if (status === "off") {
         config.ANTI_BAD_WORD = "false";
-        return reply("*anti bad word feature is now disabled*");
+        return reply("😶 *وقفنا نظام منع الشتيمة، خدو راحتكم بقى يا زبالة 😏*");
     } else {
-        return reply(`_example:  .antibad on_`);
+        return reply("📝 الاستخدام:\n⎔ .anti-bad on\n⎔ .anti-bad off");
     }
 });
 //--------------------------------------------
 //  AUTO-STICKER COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "auto-sticker",
-    alias: ["autosticker"],
-    desc: "enable or disable auto-sticker.",
+    pattern: "استيكر-تلقائي",
+    alias: ["autosticker", "تحويل-تلقائي"],
+    desc: "تشغيل أو إيقاف تحويل الصور/الفيديوهات لملصقات تلقائيًا",
     category: "settings",
     filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+    if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
     const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
+
+    if (status === "on") {
         config.AUTO_STICKER = "true";
-        return reply("auto-sticker feature is now enabled.");
-    } else if (args[0] === "off") {
+        return reply("✨ *شغلت تحويل الصور لستيكر تلقائي، كل حاجه هتتلزق دلوقتي 😂*");
+    } else if (status === "off") {
         config.AUTO_STICKER = "false";
-        return reply("auto-sticker feature is now disabled.");
+        return reply("🛑 *قفلنا التحويل التلقائي، خدو نفسكم بقى يا فنانين 🎨*");
     } else {
-        return reply(`_example:  .auto-sticker on_`);
+        return reply("📝 الاستخدام:\n⎔ .auto-sticker on\n⎔ .auto-sticker off");
     }
 });
 //--------------------------------------------
 //  AUTO-REPLY COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "auto-reply",
-    alias: ["autoreply"],
-    desc: "enable or disable auto-reply.",
-    category: "settings",
-    filename: __filename
+  pattern: "رد-تلقائي",
+  alias: ["autoreply", "رد-تلقائي"],
+  desc: "تشغيل أو إيقاف نظام الرد التلقائي.",
+  category: "settings",
+  filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+  if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يلا ومساعدين بتوعه 🤫🖕🏻");
 
-    const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
-        config.AUTO_REPLY = "true";
-        return reply("*auto-reply  is now enabled.*");
-    } else if (args[0] === "off") {
-        config.AUTO_REPLY = "false";
-        return reply("auto-reply feature is now disabled.");
-    } else {
-        return reply(`*🫟 ᴇxᴀᴍᴘʟᴇ: . ᴀᴜᴛᴏ-ʀᴇᴘʟʏ ᴏɴ*`);
-    }
+  const status = args[0]?.toLowerCase();
+
+  if (status === "on") {
+    config.AUTO_REPLY = "true";
+    return reply("✅ *نظام الرد التلقائي اشتغل.*\nأي كلمة هتتقال، عمك لوسيفر هيرد بطريقته 😂🔥");
+  } else if (status === "off") {
+    config.AUTO_REPLY = "false";
+    return reply("❌ *تم فصل نظام الرد التلقائي.*\nالواد لوسيفر دخل في المود الصامت 😴✋");
+  } else {
+    return reply("📝 الاستخدام الصح:\n⎔ .auto-reply on\n⎔ .auto-reply off");
+  }
 });
 
 //--------------------------------------------
 //   AUTO-REACT COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "auto-react",
-    alias: ["autoreact"],
-    desc: "Enable or disable the autoreact feature",
-    category: "settings",
-    filename: __filename
+  pattern: "تفاعل-تلقائي",
+  alias: ["autoreact", "تفاعل-تلقائي"],
+  desc: "تشغيل أو إيقاف نظام التفاعل التلقائي مع الرسائل.",
+  category: "settings",
+  filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+  if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يا نجم 🤫💀");
 
-    const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
-        config.AUTO_REACT = "true";
-        await reply("*autoreact feature is now enabled.*");
-    } else if (args[0] === "off") {
-        config.AUTO_REACT = "false";
-        await reply("autoreact feature is now disabled.");
-    } else {
-        await reply(`*🫟 ᴇxᴀᴍᴘʟᴇ: .ᴀᴜᴛᴏ-ʀᴇᴀᴄᴛ ᴏɴ*`);
-    }
+  const status = args[0]?.toLowerCase();
+
+  if (status === "on") {
+    config.AUTO_REACT = "true";
+    await reply("✅ *نظام التفاعل التلقائي اشتغل.*\nسيب عمك لوسيفر يتفاعل مع الناس بدماغه 😂🔥");
+  } else if (status === "off") {
+    config.AUTO_REACT = "false";
+    await reply("❌ *تم فصل نظام التفاعل التلقائي.*\nولا تفاعل ولا حاجة يا نجم 😅✋");
+  } else {
+    await reply("📝 الاستخدام الصح:\n⎔ .auto-react on\n⎔ .auto-react off");
+  }
 });
 //--------------------------------------------
 //  STATUS-REPLY COMMANDS
 //--------------------------------------------
 cmd({
-    pattern: "status-reply",
-    alias: ["autostatusreply"],
-    desc: "enable or disable status-reply.",
-    category: "settings",
-    filename: __filename
+  pattern: "نظام-رد-الحالات-التلقائي",
+  alias: ["autostatusreply", "رد-ع-الحالات"],
+  desc: "تشغيل أو إيقاف الرد التلقائي على الحالات (الاستوري).",
+  category: "settings",
+  filename: __filename
 },    
 async (conn, mek, m, { from, args, isCreator, reply }) => {
-    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+  if (!isCreator) return reply("📛 مش بسمع غير كلام عمك لوسيفر يا معلم 🤫💀");
 
-    const status = args[0]?.toLowerCase();
-    // Check the argument for enabling or disabling the anticall feature
-    if (args[0] === "on") {
-        config.AUTO_STATUS_REPLY = "true";
-        return reply("status-reply feature is now enabled.");
-    } else if (args[0] === "off") {
-        config.AUTO_STATUS_REPLY = "false";
-        return reply("status-reply feature is now disabled.");
-    } else {
-        return reply(`*🫟 ᴇxᴀᴍᴘʟᴇ:  .sᴛᴀᴛᴜs-ʀᴇᴘʟʏ ᴏɴ*`);
-    }
+  const status = args[0]?.toLowerCase();
+  
+  if (status === "on") {
+    config.AUTO_STATUS_REPLY = "true";
+    return reply("📢 نظام *الرد التلقائي على الحالات* اشتغل.\nأي حد ينزل حالة هيرد عليه عمك لوسيفر 😂🔥");
+  } else if (status === "off") {
+    config.AUTO_STATUS_REPLY = "false";
+    return reply("❌ تم إيقاف *الرد التلقائي على الحالات*.\nبس لو حد استاهل رد، متقلقش هنتصرف 😈");
+  } else {
+    return reply("📝 الاستخدام الصح:\n⎔ .status-reply on\n⎔ .status-reply off");
+  }
 });
 
 //--------------------------------------------
@@ -434,83 +439,87 @@ async (conn, mek, m, { from, args, isCreator, reply }) => {
 //--------------------------------------------
 
 cmd({
-  pattern: "antilink",
-  alias: ["antilinks"],
-  desc: "Enable or disable ANTI_LINK in groups",
+  pattern: "نظام-منع-الروابط",
+  alias: ["منع-الروابط", "antilinks"],
+  desc: "تشغيل أو إيقاف نظام منع الروابط في الجروب",
   category: "group",
   react: "🚫",
   filename: __filename
 }, async (conn, mek, m, { isGroup, isAdmins, isBotAdmins, args, reply }) => {
   try {
-    if (!isGroup) return reply('This command can only be used in a group.');
-    if (!isBotAdmins) return reply('Bot must be an admin to use this command.');
-    if (!isAdmins) return reply('You must be an admin to use this command.');
+    if (!isGroup) return reply("📛 الأمر ده للجروبات بس يا حب 💀");
+    if (!isBotAdmins) return reply("⚠️ البوت لازم يكون أدمن الأول يا نجم، مش هينفع كده 😤");
+    if (!isAdmins) return reply("🙅‍♂️ إنت مش أدمن هنا، روح نادي عمك لوسيفر أو المساعدين 🤫");
 
-    if (args[0] === "on") {
+    const status = args[0]?.toLowerCase();
+    if (status === "on") {
       config.ANTI_LINK = "true";
-      reply("✅ ANTI_LINK has been enabled.");
-    } else if (args[0] === "off") {
+      reply("✅ نظام *منع الروابط* اشتغل خلاص.\nاللي ينزل رابط هيتاخد على قفاه قريب 😈");
+    } else if (status === "off") {
       config.ANTI_LINK = "false";
-      reply("❌ ANTI_LINK has been disabled.");
+      reply("❌ تم *إيقاف منع الروابط* مؤقتًا.\nبس إياكوا تلعبوا بديلكوا 😒");
     } else {
-      reply("Usage: *.antilink on/off*");
+      reply("📌 الاستخدام:\n⎔ .antilink on\n⎔ .antilink off");
     }
   } catch (e) {
-    reply(`Error: ${e.message}`);
+    reply(`❌ حصلت مصيبة:\n${e.message}`);
   }
 });
 
 cmd({
-  pattern: "antilinkkick",
-  alias: ["kicklink"],
-  desc: "Enable or disable ANTI_LINK_KICK in groups",
+  pattern: "نظام-طرد-الروابط",
+  alias: ["kicklink", "طرد-الروابط"],
+  desc: "تشغيل أو إيقاف نظام الطرد التلقائي لنشر الروابط",
   category: "group",
-  react: "⚠️",
+  react: "🚫",
   filename: __filename
 }, async (conn, mek, m, { isGroup, isAdmins, isBotAdmins, args, reply }) => {
   try {
-    if (!isGroup) return reply('This command can only be used in a group.');
-    if (!isBotAdmins) return reply('Bot must be an admin to use this command.');
-    if (!isAdmins) return reply('You must be an admin to use this command.');
+    if (!isGroup) return reply("📛 يا نجم، الأمر ده مخصص للجروبات بس 💀");
+    if (!isBotAdmins) return reply("⚠️ البوت لازم يكون أدمن عشان يطرد الناس اللي بتنزل روابط!");
+    if (!isAdmins) return reply("🙅‍♂️ أنت مش أدمن يا حبي، سيب الإدارة لعمك لوسيفر والمساعدين بتوعه 🤫");
 
-    if (args[0] === "on") {
+    const status = args[0]?.toLowerCase();
+    if (status === "on") {
       config.ANTI_LINK_KICK = "true";
-      reply("✅ ANTI_LINK_KICK has been enabled.");
-    } else if (args[0] === "off") {
+      reply("✅ نظام الطرد التلقائي شغال دلوقتي.\nاللي ينزل رابط هيتطرد في ساعتها 💣💀");
+    } else if (status === "off") {
       config.ANTI_LINK_KICK = "false";
-      reply("❌ ANTI_LINK_KICK has been disabled.");
+      reply("❌ تم إيقاف الطرد التلقائي مؤقتًا.\nخليكم محترمين بس يا حبايب عمكم 😎");
     } else {
-      reply("Usage: *.antilinkkick on/off*");
+      reply("📌 الاستخدام:\n⎔ .antilinkkick on\n⎔ .antilinkkick off");
     }
   } catch (e) {
-    reply(`Error: ${e.message}`);
+    reply(`❌ حصلت مشكلة جامدة:\n${e.message}`);
   }
 });
 
 
 cmd({
-  pattern: "deletelink",
-  alias: ["linksdelete"],
-  desc: "Enable or disable DELETE_LINKS in groups",
+  pattern: "نظام-مسح-الروابط",
+  alias: ["linksdelete", "مسح-الروابط"],
+  desc: "تشغيل أو إيقاف خاصية مسح الروابط في الجروب",
   category: "group",
-  react: "❌",
+  react: "🧹",
   filename: __filename
 }, async (conn, mek, m, { isGroup, isAdmins, isBotAdmins, args, reply }) => {
   try {
-    if (!isGroup) return reply('This command can only be used in a group.');
-    if (!isBotAdmins) return reply('Bot must be an admin to use this command.');
-    if (!isAdmins) return reply('You must be an admin to use this command.');
+    if (!isGroup) return reply("📛 الأمر ده للجروبات بس يا حب متفتيش برا الجروب 💀");
+    if (!isBotAdmins) return reply("⚠️ لازم البوت يكون أدمن عشان يعرف يمسح الروابط!");
+    if (!isAdmins) return reply("🙅‍♂️ أنت مش أدمن يا قلب عمك لوسيفر، متدخلش في شغل الكبار 🤫");
 
-    if (args[0] === "on") {
+    const status = args[0]?.toLowerCase();
+    if (status === "on") {
       config.DELETE_LINKS = "true";
-      reply("✅ DELETE_LINKS is now enabled.");
-    } else if (args[0] === "off") {
+      reply("✅ تم تشغيل نظام مسح الروابط.\nاللي ينزل رابط هيتبهدل يا نجم 💣");
+    } else if (status === "off") {
       config.DELETE_LINKS = "false";
-      reply("❌ DELETE_LINKS is now disabled.");
+      reply("❌ تم إيقاف نظام مسح الروابط.\nعيشوا براحتكم مؤقتًا 😎");
     } else {
-      reply("Usage: *.deletelink on/off*");
+      reply("📌 الاستخدام الصح:\n⎔ .deletelink on\n⎔ .deletelink off");
     }
+
   } catch (e) {
-    reply(`Error: ${e.message}`);
+    reply(`❌ حصلت مشكلة يا كبير:\n${e.message}`);
   }
 });

@@ -4,116 +4,138 @@ const config = require('../config');
 const {sleep} = require('../lib/functions')
 // 1. Shutdown Bot
 cmd({
-    pattern: "shutdown",
+    pattern: "قفل-البوت",
     desc: "Shutdown the bot.",
     category: "owner",
     react: "🛑",
     filename: __filename
 },
 async (conn, mek, m, { from, isOwner, reply }) => {
-    if (!isOwner) return reply("❌ You are not the owner!");
-    reply("🛑 Shutting down...").then(() => process.exit());
+    if (!isOwner) return reply("انت مش الادمن يا كسمك 🤫");
+    reply("Done...🥂✨").then(() => process.exit());
 });
 // 2. Broadcast Message to All Groups
 cmd({
-    pattern: "broadcast",
+    pattern: "رساله-للجروبات",
     desc: "Broadcast a message to all groups.",
     category: "owner",
     react: "📢",
     filename: __filename
 },
 async (conn, mek, m, { from, isOwner, args, reply }) => {
-    if (!isOwner) return reply("❌ You are not the owner!");
-    if (args.length === 0) return reply("📢 Please provide a message to broadcast.");
+    if (!isOwner) return reply("انت مش الادمن يا علق 😏");
+    if (args.length === 0) return reply("الرساله بعد الامر يا مطوري ❤️🥂✨");
     const message = args.join(' ');
     const groups = Object.keys(await conn.groupFetchAllParticipating());
     for (const groupId of groups) {
         await conn.sendMessage(groupId, { text: message }, { quoted: mek });
     }
-    reply("📢 Message broadcasted to all groups.");
+    reply("Done...🥂✨");
 });
 // 3. Set Profile Picture
 cmd({
-    pattern: "setpp",
-    desc: "Set bot profile picture.",
+    pattern: "تغيير-صوره-البوت",
+    desc: "تغيير صورة البروفايل بتاعة البوت.",
     category: "owner",
     react: "🖼️",
     filename: __filename
 },
 async (conn, mek, m, { from, isOwner, quoted, reply }) => {
-    if (!isOwner) return reply("❌ You are not the owner!");
-    if (!quoted || !quoted.message.imageMessage) return reply("❌ Please reply to an image.");
+    if (!isOwner) return reply("انت مش ادمن يا علق 😏");
+    if (!quoted || !quoted.message.imageMessage) return reply("رد علي الصوره يا مطوري ❤️✨");
     try {
         const media = await conn.downloadMediaMessage(quoted);
-        await conn.updateProfilePicture(conn.user.jid, { url: media });
-        reply("🖼️ Profile picture updated successfully!");
+        await conn.updateProfilePicture(conn.user.id, media); // استخدم Buffer مباشرةً
+        reply("تم تغيير صورة البوت يا ريس 🖼️✨");
     } catch (error) {
-        reply(`❌ Error updating profile picture: ${error.message}`);
+        console.error(error);
+        reply(`❌ حصلت مشكله يا حب: ${error.message}`);
     }
 });
 
 // 6. Clear All Chats
 cmd({
-    pattern: "clearchats",
-    desc: "Clear all chats from the bot.",
+    pattern: "مسح-الشتات",
+    desc: "يمسح كل المحادثات من البوت.",
     category: "owner",
     react: "🧹",
     filename: __filename
 },
 async (conn, mek, m, { from, isOwner, reply }) => {
-    if (!isOwner) return reply("❌ You are not the owner!");
+    if (!isOwner) return reply("انت مش المطور 😏");
+
     try {
-        const chats = conn.chats.all();
-        for (const chat of chats) {
-            await conn.modifyChat(chat.jid, 'delete');
+        const allChats = Object.keys(conn.chats);
+
+        for (const chatId of allChats) {
+            await conn.chatModify(
+                { delete: true, lastMessages: [{}] }, 
+                chatId
+            );
         }
-        reply("🧹 All chats cleared successfully!");
+
+        reply("تم مسح كل الشاتات من البوت يا كبير 🧹✨");
     } catch (error) {
-        reply(`❌ Error clearing chats: ${error.message}`);
+        console.error(error);
+        reply(`❌ حصلت مشكلة أثناء المسح: ${error.message}`);
     }
 });
 
 // 8. Group JIDs List
 cmd({
-    pattern: "gjid",
-    desc: "Get the list of JIDs for all groups the bot is part of.",
+    pattern: "جروبات",
+    desc: "بيجبلك JIDs بتاعة كل الجروبات اللي البوت فيها.",
     category: "owner",
     react: "📝",
     filename: __filename
 },
 async (conn, mek, m, { from, isOwner, reply }) => {
-    if (!isOwner) return reply("❌ You are not the owner!");
-    const groups = await conn.groupFetchAllParticipating();
-    const groupJids = Object.keys(groups).join('\n');
-    reply(`📝 *Group JIDs:*\n\n${groupJids}`);
-});
+    if (!isOwner) return reply("انت مش المطور يا علق 👍🏻😊");
 
+    try {
+        const groups = await conn.groupFetchAllParticipating();
+        const groupJids = Object.keys(groups);
+
+        if (groupJids.length === 0) return reply("البوت مش موجود في ولا جروب حالياً يا حب 🥲");
+
+        const list = groupJids.map((jid, i) => `${i + 1}. ${jid}`).join('\n');
+
+        reply(`📝 *قائمة JIDs للجروبات:*\n\n${list}`);
+    } catch (e) {
+        console.error(e);
+        reply("حصلت مشكلة وأنا بجمع الـ JIDs يا حب 💔");
+    }
+});
 
 // delete 
 
 cmd({
-pattern: "delete",
-react: "❌",
-alias: ["del"],
-desc: "delete message",
-category: "group",
-use: '.del',
-filename: __filename
-},
-async(conn, mek, m,{from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants,  isItzcp, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-if (!isOwner ||  !isAdmins) return;
-try{
-if (!m.quoted) return reply(mg.notextfordel);
-const key = {
+    pattern: "مسح",
+    react: "❌",
+    alias: ["طير"],
+    desc: "مسح رسالة بالرد",
+    category: "group",
+    use: '.مسح (بالرد)',
+    filename: __filename
+},    
+async (conn, mek, m, {
+    from, quoted, isOwner, isAdmins, reply
+}) => {
+    if (!(isOwner || isAdmins)) return reply("*الأمر ده للمشرفين بس يا حب 🤫*");
+    
+    try {
+        if (!m.quoted) return reply("🧷 رد على الرسالة اللي عايز تمسحها يا نجم!");
+
+        const key = {
             remoteJid: m.chat,
             fromMe: false,
-            id: m.quoted.id,
+            id: m.quoted.id.id,
             participant: m.quoted.sender
-        }
-        await conn.sendMessage(m.chat, { delete: key })
-} catch(e) {
-console.log(e);
-reply('successful..👨‍💻✅')
-} 
-})
+        };
 
+        await conn.sendMessage(m.chat, { delete: key });
+    } catch (e) {
+        console.log(e);
+        reply("في حاجه غلط حصلت، جرب تاني 🥹");
+    }
+});

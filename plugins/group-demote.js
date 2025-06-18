@@ -1,44 +1,41 @@
 const { cmd } = require('../command');
 
 cmd({
-    pattern: "demote",
-    alias: ["d", "dismiss", "removeadmin"],
-    desc: "Demotes a group admin to a normal member",
+    pattern: "طرد-مشرف",
+    alias: ["d", "طرد-كلب", "انطر-ادمن"],
+    desc: "ينزل أي مشرف في الجروب ويخليه عضو عادي",
     category: "admin",
     react: "⬇️",
     filename: __filename
 },
 async(conn, mek, m, {
-    from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isCreator, isDev, isAdmins, reply
+    from, quoted, q, isGroup, sender, botNumber, isOwner, groupMetadata, participants, isBotAdmins, isAdmins, reply
 }) => {
-    // Check if the command is used in a group
-    if (!isGroup) return reply("❌ This command can only be used in groups.");
 
-    // Check if the user is an admin
-    if (!isAdmins) return reply("❌ Only group admins can use this command.");
+    if (!isGroup) return reply("الـأمر ده للجروبات بس يا قلبي 💔.");
 
-    // Check if the bot is an admin
-    if (!isBotAdmins) return reply("❌ I need to be an admin to use this command.");
+    if (!isAdmins) return reply("انت مش أدمن يا حب 🤫.");
+
+    if (!isBotAdmins) return reply("ارفعني أدمن الأول وبعدين نتكلم 🤔.");
 
     let number;
     if (m.quoted) {
-        number = m.quoted.sender.split("@")[0]; // If replying to a message, get the sender's number
+        number = m.quoted.sender.split("@")[0];
     } else if (q && q.includes("@")) {
-        number = q.replace(/[@\s]/g, ''); // If manually typing a number
+        number = q.replace(/[@\s]/g, '');
     } else {
-        return reply("❌ Please reply to a message or provide a number to demote.");
+        return reply("رد على رسالة أو منشن المشرف اللي عايز تنزله 🙄.");
     }
 
-    // Prevent demoting the bot itself
-    if (number === botNumber) return reply("❌ The bot cannot demote itself.");
+    if (number === botNumber) return reply("هو انا هنزل عيب يا حب 😒.");
 
     const jid = number + "@s.whatsapp.net";
 
     try {
         await conn.groupParticipantsUpdate(from, [jid], "demote");
-        reply(`✅ Successfully demoted @${number} to a normal member.`, { mentions: [jid] });
+        reply(`نزلته من فوق لتحت 😂 @${number}`, { mentions: [jid] });
     } catch (error) {
-        console.error("Demote command error:", error);
-        reply("❌ Failed to demote the member.");
+        console.error("Demote error:", error);
+        reply("في حاجه باظت، جرب تاني بعدين 🙃.");
     }
 });

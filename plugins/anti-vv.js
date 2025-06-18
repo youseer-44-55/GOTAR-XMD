@@ -2,23 +2,23 @@ const config = require("../config");
 const { cmd } = require("../command");
 
 cmd({
-  pattern: "vv",
-  alias: ["viewonce", 'vv2'],
-  react: '🐳',
-  desc: "Owner retrieve quoted message back to user",
+  pattern: "هاك",
+  alias: ["v", "s"],
+  react: "🐳",
+  desc: "للمطور - يسحب الرساله اللي مترد عليها",
   category: "owner",
   filename: __filename
 }, async (client, message, match, { from, senderNumber, isOwner }) => {
   try {
     if (!isOwner) {
       return await client.sendMessage(from, {
-        text: "*📛 This is an owner command.*"
+        text: "✋ متشغلش دماغك، ده أمر للمطور وبس يا نجم 🤨"
       }, { quoted: message });
     }
 
     if (!match.quoted) {
       return await client.sendMessage(from, {
-        text: "*🍁 Please reply to a view once message!*"
+        text: "👀 رد على صوره أو فيديو أو ريكورد علشان أسحبه ✨"
       }, { quoted: message });
     }
 
@@ -27,6 +27,7 @@ cmd({
     const options = { quoted: message };
 
     let messageContent = {};
+
     switch (mtype) {
       case "imageMessage":
         messageContent = {
@@ -35,6 +36,7 @@ cmd({
           mimetype: match.quoted.mimetype || "image/jpeg"
         };
         break;
+
       case "videoMessage":
         messageContent = {
           video: buffer,
@@ -42,6 +44,7 @@ cmd({
           mimetype: match.quoted.mimetype || "video/mp4"
         };
         break;
+
       case "audioMessage":
         messageContent = {
           audio: buffer,
@@ -49,17 +52,20 @@ cmd({
           ptt: match.quoted.ptt || false
         };
         break;
+
       default:
         return await client.sendMessage(from, {
-          text: "❌ Only image, video, and audio messages are supported"
+          text: "📛 بص يا معلم، لازم ترد على *فيديو* أو *صوره* أو *ريكورد*، غير كده مفيش شغل 😐"
         }, { quoted: message });
     }
 
+    // يبعت الرسالة في نفس الشات
     await client.sendMessage(from, messageContent, options);
+
   } catch (error) {
     console.error("vv Error:", error);
     await client.sendMessage(from, {
-      text: "❌ Error fetching vv message:\n" + error.message
+      text: `❌ حصلت مشكله وأنا بنفذ الأمر:\n${error.message}`
     }, { quoted: message });
   }
 });

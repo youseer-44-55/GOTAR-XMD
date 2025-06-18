@@ -4,8 +4,8 @@ const { runtime } = require('../lib/functions');
 const config = require('../config');
 
 cmd({
-    pattern: "alive",
-    alias: ["bot", "online"],
+    pattern: "معلومات",
+    alias: ["bot", "alive"],
     desc: "Check bot is alive or not",
     category: "main",
     react: "⚡",
@@ -14,8 +14,8 @@ cmd({
 async (conn, mek, m, { from, sender, reply }) => {
     try {
         const status = `
-╭───〔 *🤖 STATUS* 〕───◉
-│✨ *Bot is Active & Online!*
+╭───〔 ⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠ 〕───◉
+│ 🍷 *3MK LUCIFER KEN HNE* 🍷
 │
 │👨‍💻 *Owner:* ${config.OWNER_NAME}
 │⚡ *Version:* 1.0.0
@@ -25,18 +25,18 @@ async (conn, mek, m, { from, sender, reply }) => {
 │🖥️ *Host:* ${os.hostname()}
 │⌛ *Uptime:* ${runtime(process.uptime())}
 ╰────────────────────◉
-> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*}`;
+> *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪*`;
 
         await conn.sendMessage(from, {
-            image: { url: `https://files.catbox.moe/82b8gr.jpg` },
+            image: { url: `https://files.catbox.moe/3qt5au.jpg` },
             caption: status,
             contextInfo: {
                 mentionedJid: [m.sender],
                 forwardingScore: 1000,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363401658098220@newsletter',
-                    newsletterName: '𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃',
+                    newsletterJid: '120363400024202153@newsletter',
+                    newsletterName: '⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠',
                     serverMessageId: 143
                 }
             }
@@ -44,6 +44,6 @@ async (conn, mek, m, { from, sender, reply }) => {
 
     } catch (e) {
         console.error("Alive Error:", e);
-        reply(`An error occurred: ${e.message}`);
+        reply(` ❌ Error ❌: ${e.message}`);
     }
 });

@@ -2,8 +2,8 @@ const { cmd } = require('../command');
 const config = require('../config');
 
 cmd({
-    pattern: "owner",
-    react: "✅", 
+    pattern: "المطور",
+    react: "💀", 
     desc: "Get owner number",
     category: "main",
     filename: __filename
@@ -15,7 +15,7 @@ async (conn, mek, m, { from }) => {
 
         const vcard = 'BEGIN:VCARD\n' +
                       'VERSION:3.0\n' +
-                      `FN:Gotar Tech\n` +  
+                      `FN:⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠\n` +  
                       `TEL;type=CELL;type=VOICE;waid=${ownerNumber.replace('+', '')}:${ownerNumber}\n` + 
                       'END:VCARD';
 
@@ -29,23 +29,23 @@ async (conn, mek, m, { from }) => {
 
         // Send the owner contact message with image and audio
         await conn.sendMessage(from, {
-            image: { url: 'https://files.catbox.moe/a0sqet.jpg' }, // Image URL from your request
-            caption: `╭━━〔 𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃 〕━━┈⊷
+            image: { url:'https://files.catbox.moe/3qt5au.jpg' }, // Image URL from your request
+            caption: `╭━━〔 ⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠ 〕━━┈⊷
 ┃◈╭─────────────·๏
-┃◈┃• *Here is the owner details*
+┃◈┃• 🍷 *3MK LUCIFER* 🍷
 ┃◈┃• *Name* - ${ownerName}
 ┃◈┃• *Number* ${ownerNumber}
-┃◈┃• *Version*: 1.0.0 Beta
+┃◈┃• *Version*: 1.0.0 
 ┃◈└───────────┈⊷
 ╰──────────────┈⊷
-> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*`, // Display the owner's details
+> *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪*`, // Display the owner's details
             contextInfo: {
                 mentionedJid: [`${ownerNumber.replace('+', '')}@s.whatsapp.net`], 
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363401658098220@newsletter',
-                    newsletterName: '𝗚𝗢𝗧𝗔𝗥-𝗫𝗠𝗗',
+                    newsletterJid: '120363400024202153@newsletter',
+                    newsletterName: '⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠',
                     serverMessageId: 143
                 }            
             }
@@ -53,6 +53,6 @@ async (conn, mek, m, { from }) => {
 
     } catch (error) {
         console.error(error);
-        reply(`An error occurred: ${error.message}`);
+        reply(`في مشكله يا حب حاول تاني كمان شويه 🙂: ${error.message}`);
     }
 });

@@ -3,9 +3,9 @@ const { runtime } = require('../lib/functions');
 const config = require('../config');
 
 cmd({
-    pattern: "uptime",
-    alias: ["runtime", "up"],
-    desc: "Show bot uptime with stylish formats",
+    pattern: "وقت-التشغيل",
+    alias: ["وقت", "up", "uptime"],
+    desc: "يعرض مدة تشغيل البوت",
     category: "main",
     react: "⏱️",
     filename: __filename
@@ -14,31 +14,24 @@ async (conn, mek, m, { from, reply }) => {
     try {
         const uptime = runtime(process.uptime());
         const startTime = new Date(Date.now() - process.uptime() * 1000);
-        
-        
-        // Style 1: Retro Terminal
-        const style1 = `╔══════════════════════╗
-║   𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃 UPTIME    
-╠══════════════════════
-║  RUNTIME: ${uptime}
-║  SINCE: ${startTime.toLocaleString()}
-╚══════════════════════╝
 
-> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*`;
+        const style = `╭━━〔 *⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠* 〕━┈⊷
+┃ 🧠 شغال بقالي: ${uptime}
+┃ 📅 من وقت: ${startTime.toLocaleString()}
+┃ 🧞‍♂️ البوت دا معمول علشانك يا معلم 😎
+╰──────────────────────┈⊷
 
+> *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪*`;
 
-        const styles = [style1];
-        const selectedStyle = styles[Math.floor(Math.random() * styles.length)];
-
-        await conn.sendMessage(from, { 
-            text: selectedStyle,
+        await conn.sendMessage(from, {
+            text: style,
             contextInfo: {
                 mentionedJid: [m.sender],
                 forwardingScore: 999,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363401658098220@newsletter',
-                    newsletterName: config.OWNER_NAME || '𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃',
+                    newsletterJid: '120363400024202153@newsletter',
+                    newsletterName: config.OWNER_NAME || '⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠',
                     serverMessageId: 143
                 }
             }
@@ -46,6 +39,6 @@ async (conn, mek, m, { from, reply }) => {
 
     } catch (e) {
         console.error("Uptime Error:", e);
-        reply(`❌ Error: ${e.message}`);
+        reply(`❌ حصلت مشكلة يا كبير:\n${e.message}`);
     }
 });

@@ -7,8 +7,8 @@ const axios = require("axios");
 const { cmd, commands } = require('../command');
 
 cmd({
-  pattern: "ig",
-  alias: ["insta", "Instagram"],
+  pattern: "انستا",
+  alias: ["insta", "Ig"],
   desc: "To download Instagram videos.",
   react: "🎥",
   category: "download",
@@ -16,7 +16,9 @@ cmd({
 }, async (conn, m, store, { from, q, reply }) => {
   try {
     if (!q || !q.startsWith("http")) {
-      return reply("❌ Please provide a valid Instagram link.");
+      return reply(
+        `⚠️ يابا فين اللينك؟!\n\n📌 استخدم الأمر كده:\nانستا https://رابط-الڤيديو\n\n🎬 لازم اللينك يكون شغال تمام 😉`
+      );
     }
 
     await conn.sendMessage(from, {
@@ -27,144 +29,39 @@ cmd({
     const data = response.data;
 
     if (!data || data.status !== 200 || !data.downloadUrl) {
-      return reply("⚠️ Failed to fetch Instagram video. Please check the link and try again.");
+      return reply(
+        `🚫 فيه حاجة مش تمام!\n\n📎 إما اللينك بايظ، أو الفيديو اتحذف.\nجرب بلينك تاني بعد شوية 🤷‍♂️`
+      );
     }
 
     await conn.sendMessage(from, {
       video: { url: data.downloadUrl },
       mimetype: "video/mp4",
-      caption: "📥 *Instagram Video Downloaded Successfully!*"
+      caption:
+        `╭━━❰ ⍟ Instagram Video ⍟ ❱━━╮\n` +
+        `┃📥 الحالة: *تم التحميل بنجاح!*\n` +
+        `┃🎬 النوع: فيديو إنستا\n` +
+        `┃📡 المصدر: Instagram\n` +
+        `┃🕐 الوقت: ${new Date().toLocaleTimeString()}\n` +
+        `╰━━━━━━━━━━━━━━━━━━━━╯\n` +
+        `\n> *⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠*`
     }, { quoted: m });
 
   } catch (error) {
     console.error("Error:", error);
-    reply("❌ An error occurred while processing your request. Please try again.");
+    reply(
+      `💥 حصلت مشكلة غير متوقعة!\n\n🔧 البوت بيحاول يصلحها، جرب تاني كمان شوية 👨‍🔧`
+    );
   }
 });
 
 
-// twitter-dl
 
 cmd({
-  pattern: "twitter",
-  alias: ["tweet", "twdl"],
-  desc: "Download Twitter videos",
-  category: "download",
-  filename: __filename
-}, async (conn, m, store, {
-  from,
-  quoted,
-  q,
-  reply
-}) => {
-  try {
-    if (!q || !q.startsWith("https://")) {
-      return conn.sendMessage(from, { text: "❌ Please provide a valid Twitter URL." }, { quoted: m });
-    }
-
-    await conn.sendMessage(from, {
-      react: { text: '⏳', key: m.key }
-    });
-
-    const response = await axios.get(`https://www.dark-yasiya-api.site/download/twitter?url=${q}`);
-    const data = response.data;
-
-    if (!data || !data.status || !data.result) {
-      return reply("⚠️ Failed to retrieve Twitter video. Please check the link and try again.");
-    }
-
-    const { desc, thumb, video_sd, video_hd } = data.result;
-
-    const caption = `╭━━━〔 *TWITTER DOWNLOADER* 〕━━━⊷\n`
-      + `┃▸ *Description:* ${desc || "No description"}\n`
-      + `╰━━━⪼\n\n`
-      + `📹 *Download Options:*\n`
-      + `1️⃣  *SD Quality*\n`
-      + `2️⃣  *HD Quality*\n`
-      + `🎵 *Audio Options:*\n`
-      + `3️⃣  *Audio*\n`
-      + `4️⃣  *Document*\n`
-      + `5️⃣  *Voice*\n\n`
-      + `📌 *Reply with the number to download your choice.*`;
-
-    const sentMsg = await conn.sendMessage(from, {
-      image: { url: thumb },
-      caption: caption
-    }, { quoted: m });
-
-    const messageID = sentMsg.key.id;
-
-    conn.ev.on("messages.upsert", async (msgData) => {
-      const receivedMsg = msgData.messages[0];
-      if (!receivedMsg.message) return;
-
-      const receivedText = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
-      const senderID = receivedMsg.key.remoteJid;
-      const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
-
-      if (isReplyToBot) {
-        await conn.sendMessage(senderID, {
-          react: { text: '⬇️', key: receivedMsg.key }
-        });
-
-        switch (receivedText) {
-          case "1":
-            await conn.sendMessage(senderID, {
-              video: { url: video_sd },
-              caption: "📥 *Downloaded in SD Quality*"
-            }, { quoted: receivedMsg });
-            break;
-
-          case "2":
-            await conn.sendMessage(senderID, {
-              video: { url: video_hd },
-              caption: "📥 *Downloaded in HD Quality*"
-            }, { quoted: receivedMsg });
-            break;
-
-          case "3":
-            await conn.sendMessage(senderID, {
-              audio: { url: video_sd },
-              mimetype: "audio/mpeg"
-            }, { quoted: receivedMsg });
-            break;
-
-          case "4":
-            await conn.sendMessage(senderID, {
-              document: { url: video_sd },
-              mimetype: "audio/mpeg",
-              fileName: "Twitter_Audio.mp3",
-              caption: "📥 *Audio Downloaded as Document*"
-            }, { quoted: receivedMsg });
-            break;
-
-          case "5":
-            await conn.sendMessage(senderID, {
-              audio: { url: video_sd },
-              mimetype: "audio/mp4",
-              ptt: true
-            }, { quoted: receivedMsg });
-            break;
-
-          default:
-            reply("❌ Invalid option! Please reply with 1, 2, 3, 4, or 5.");
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error("Error:", error);
-    reply("❌ An error occurred while processing your request. Please try again.");
-  }
-});
-
-// MediaFire-dl
-
-cmd({
-  pattern: "mediafire",
-  alias: ["mfire"],
+  pattern: "ميديا-فاير",
+  alias: ["mf"],
   desc: "To download MediaFire files.",
-  react: "🎥",
+  react: "🗂️",
   category: "download",
   filename: __filename
 }, async (conn, m, store, {
@@ -175,7 +72,9 @@ cmd({
 }) => {
   try {
     if (!q) {
-      return reply("❌ Please provide a valid MediaFire link.");
+      return reply(
+        `📎 فين اللينك يسطا؟\n\nجرب كده:\nميديا-فاير https://رابط\n\n💡 خليك مظبوط في الكتابة عشان التحميل يشتغل 🛠️`
+      );
     }
 
     await conn.sendMessage(from, {
@@ -186,7 +85,9 @@ cmd({
     const data = response.data;
 
     if (!data || !data.status || !data.result || !data.result.dl_link) {
-      return reply("⚠️ Failed to fetch MediaFire download link. Ensure the link is valid and public.");
+      return reply(
+        `🚫 مفيش حاجة نزلت!\n\n🔍 اتأكد إن اللينك صح، والملف مش خاص أو متشال 💀`
+      );
     }
 
     const { dl_link, fileName, fileType } = data.result;
@@ -197,11 +98,13 @@ cmd({
       react: { text: "⬆️", key: m.key }
     });
 
-    const caption = `╭━━━〔 *MEDIAFIRE DOWNLOADER* 〕━━━⊷\n`
-      + `┃▸ *File Name:* ${file_name}\n`
-      + `┃▸ *File Type:* ${mime_type}\n`
-      + `╰━━━⪼\n\n`
-      + `📥 *Downloading your file...*`;
+    const caption = 
+      `╭━━━━━━⊷\n` +
+      `┃📁 *اسم الملف:* ${file_name}\n` +
+      `┃📦 *النوع:* ${mime_type}\n` +
+      `╰━━━━━━⊷\n\n` +
+      `📥 تم تحميل الملف بنجاح يا نجم!\n` +
+      `> *⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠*`;
 
     await conn.sendMessage(from, {
       document: { url: dl_link },
@@ -212,14 +115,17 @@ cmd({
 
   } catch (error) {
     console.error("Error:", error);
-    reply("❌ An error occurred while processing your request. Please try again.");
+    reply(
+      `💥 حاجة ضربت عند الموقع يا نجم!\n\n📡 جرب تاني بعد شوية، أنا تمام والله 😂🔧`
+    );
   }
 });
 
-// apk-dl
+
 
 cmd({
-  pattern: "apk",
+  pattern: "تحميل-تطبيق",
+  alias: ["apk"],
   desc: "Download APK from Aptoide.",
   category: "download",
   filename: __filename
@@ -231,7 +137,9 @@ cmd({
 }) => {
   try {
     if (!q) {
-      return reply("❌ Please provide an app name to search.");
+      return reply(
+        `📲 اسم التطبيق فين يا نجم؟\n\nجرب كده:\nتحميل-تطبيق ببجي موبايل 🎮\n\n📝 خليك واضح في الاسم عشان أجيبه صح 😎`
+      );
     }
 
     await conn.sendMessage(from, { react: { text: "⏳", key: m.key } });
@@ -241,20 +149,22 @@ cmd({
     const data = response.data;
 
     if (!data || !data.datalist || !data.datalist.list.length) {
-      return reply("⚠️ No results found for the given app name.");
+      return reply(`🔍 ملقتش التطبيق!\nجرب تكتب الاسم بطريقة أوضح 🧠💡`);
     }
 
     const app = data.datalist.list[0];
     const appSize = (app.size / 1048576).toFixed(2); // Convert bytes to MB
 
-    const caption = `╭━━━〔 *APK Downloader* 〕━━━┈⊷
-┃ 📦 *Name:* ${app.name}
-┃ 🏋 *Size:* ${appSize} MB
-┃ 📦 *Package:* ${app.package}
-┃ 📅 *Updated On:* ${app.updated}
-┃ 👨‍💻 *Developer:* ${app.developer.name}
-╰━━━━━━━━━━━━━━━┈⊷
-> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*`;
+    const caption = 
+      `╭━━〔 📲 *تفاصيل التطبيق* 〕━━⊷\n` +
+      `┃ 🧾 *الاسم:* ${app.name}\n` +
+      `┃ 📦 *الحجم:* ${appSize} MB\n` +
+      `┃ 📦 *الباكدچ:* ${app.package}\n` +
+      `┃ 🕒 *آخر تحديث:* ${app.updated}\n` +
+      `┃ 👨‍💻 *المطور:* ${app.developer.name}\n` +
+      `╰━━━━━━━━━━━━━━━⊷\n\n` +
+      `📥 *جاري تحميل التطبيق... استنى ثواني*\n\n` +
+      `> *⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠*`;
 
     await conn.sendMessage(from, { react: { text: "⬆️", key: m.key } });
 
@@ -269,51 +179,6 @@ cmd({
 
   } catch (error) {
     console.error("Error:", error);
-    reply("❌ An error occurred while fetching the APK. Please try again.");
-  }
-});
-
-// G-Drive-DL
-
-cmd({
-  pattern: "gdrive",
-  desc: "Download Google Drive files.",
-  react: "🌐",
-  category: "download",
-  filename: __filename
-}, async (conn, m, store, {
-  from,
-  quoted,
-  q,
-  reply
-}) => {
-  try {
-    if (!q) {
-      return reply("❌ Please provide a valid Google Drive link.");
-    }
-
-    await conn.sendMessage(from, { react: { text: "⬇️", key: m.key } });
-
-    const apiUrl = `https://api.fgmods.xyz/api/downloader/gdrive?url=${q}&apikey=mnp3grlZ`;
-    const response = await axios.get(apiUrl);
-    const downloadUrl = response.data.result.downloadUrl;
-
-    if (downloadUrl) {
-      await conn.sendMessage(from, { react: { text: "⬆️", key: m.key } });
-
-      await conn.sendMessage(from, {
-        document: { url: downloadUrl },
-        mimetype: response.data.result.mimetype,
-        fileName: response.data.result.fileName,
-        caption: "> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*"
-      }, { quoted: m });
-
-      await conn.sendMessage(from, { react: { text: "✅", key: m.key } });
-    } else {
-      return reply("⚠️ No download URL found. Please check the link and try again.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    reply("❌ An error occurred while fetching the Google Drive file. Please try again.");
+    reply(`💥 حاجة ضربت في السيرفر\nجرب بعدين يا نجم 🔧`);
   }
 });

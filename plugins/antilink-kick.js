@@ -46,15 +46,18 @@ cmd({
 
     if (containsLink && config.ANTI_LINK_KICK === 'true') {
       await conn.sendMessage(from, { 'delete': m.key }, { 'quoted': m });
+
+      const warningText = `🚫 *تحذير من عمكم لوسيفر* 🚫\n\nالروابط هنا ممنوعة يا حب ✋\n\n📌 القوانين:\n1. ممنوع نشر أي لينك.\n2. حتى لو لينك يوتيوب أو تيليجرام.\n3. الطرد بيتم تلقائي.\n\n@${sender.split('@')[0]} اتفضل بره يا نجم 🤡`;
+
       await conn.sendMessage(from, {
-        'text': `⚠️ Links are not allowed in this group.\n@${sender.split('@')[0]} has been removed. 🚫`,
-        'mentions': [sender]
-      }, { 'quoted': m });
+        text: warningText,
+        mentions: [sender]
+      }, { quoted: m });
 
       await conn.groupParticipantsUpdate(from, [sender], "remove");
     }
   } catch (error) {
     console.error(error);
-    reply("An error occurred while processing the message.");
+    reply("❌ حصل خطأ أثناء تنفيذ الأمر.");
   }
 });

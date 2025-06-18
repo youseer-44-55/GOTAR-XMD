@@ -1,20 +1,22 @@
 const { cmd } = require("../command");
 
 cmd({
-  pattern: "vv2",
-  alias: ["wah", "ohh", "oho", "🙂", "nice", "ok"],
-  desc: "Owner Only - retrieve quoted message back to user",
+  pattern: "هاك-2",
+  alias: ["بريفت", "ohh", "oho", "💀", "nice", "ok"],
+  desc: "Owner Only - يرجّع الرسالة على الخاص",
   category: "owner",
   filename: __filename
 }, async (client, message, match, { from, isCreator }) => {
   try {
     if (!isCreator) {
-      return; // Simply return without any response if not owner
+      return await client.sendMessage(from, {
+        text: "انت مش المطور يا حته 🤫🥂"
+      }, { quoted: message });
     }
 
     if (!match.quoted) {
       return await client.sendMessage(from, {
-        text: "*🍁 Please reply to a view once message!*"
+        text: "👀 رد على رساله فيها صوره أو فيديو أو ريكورد علشان أقدر أسحبها ✨"
       }, { quoted: message });
     }
 
@@ -23,6 +25,7 @@ cmd({
     const options = { quoted: message };
 
     let messageContent = {};
+
     switch (mtype) {
       case "imageMessage":
         messageContent = {
@@ -31,6 +34,7 @@ cmd({
           mimetype: match.quoted.mimetype || "image/jpeg"
         };
         break;
+
       case "videoMessage":
         messageContent = {
           video: buffer,
@@ -38,6 +42,7 @@ cmd({
           mimetype: match.quoted.mimetype || "video/mp4"
         };
         break;
+
       case "audioMessage":
         messageContent = {
           audio: buffer,
@@ -45,18 +50,20 @@ cmd({
           ptt: match.quoted.ptt || false
         };
         break;
+
       default:
         return await client.sendMessage(from, {
-          text: "❌ Only image, video, and audio messages are supported"
+          text: "✋ الأمر ده بيشتغل مع *صوره* أو *فيديو* أو *ريكورد* بس يا عم الحج 😐"
         }, { quoted: message });
     }
 
-    // Forward to user's DM
+    // يبعت الرسالة للمطور على الخاص
     await client.sendMessage(message.sender, messageContent, options);
+
   } catch (error) {
     console.error("vv Error:", error);
     await client.sendMessage(from, {
-      text: "❌ Error fetching vv message:\n" + error.message
+      text: `❌ حصلت مشكلة وأنا بسحب الرسالة:\n${error.message}`
     }, { quoted: message });
   }
 });

@@ -3,16 +3,16 @@ const { cmd, commands } = require('../command')
 const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions')
 
 cmd({
-    pattern: "join",
+    pattern: "خش",
     react: "📬",
-    alias: ["joinme", "f_join"],
-    desc: "Join a group using an invite link",
+    alias: ["انضم", "ادخل-جروب", "joinme", "f_join"],
+    desc: "يخلي البوت ينضم لجروب برابط دعوة",
     category: "group",
-    use: '.join <Group Link>',
+    use: '.انضم <رابط الجروب>',
     filename: __filename
 }, async (conn, mek, m, { from, q, quoted, isOwner, reply }) => {
     try {
-        if (!isOwner) return reply("❌ You don't have permission to use this command.");
+        if (!isOwner) return reply("❌ الأمر دا للمالك بس يا عسل 😌");
 
         let groupLink;
         if (quoted && quoted.type === 'conversation' && isUrl(quoted.text)) {
@@ -22,19 +22,29 @@ cmd({
         }
 
         if (!groupLink || groupLink.length !== 22) {
-            return reply("❌ *Invalid group link format*");
+            return reply("❌ شكل الرابط غلط يا نجم، راجعه كده 🙃");
         }
 
-        reply(`⏳ Attempting to join group using code: *${groupLink}*`);
+        reply(`⏳ جاري الانضمام للجروب باستخدام الكود: *${groupLink}*`);
         await conn.groupAcceptInvite(groupLink);
-        reply(`✔️ Successfully joined the group!`);
+        reply(`✅ دخلت الجروب بنجاح يا معلم 😎✌️`);
 
     } catch (e) {
         console.error("Join Error:", e);
         if (e.message && e.message.includes('not-authorized')) {
-            reply(`❌ *Error: Not authorized to join the group.*\n\nPossible Reasons:\n- The bot's WhatsApp account is restricted or banned\n- The session has expired or been logged out\n- The invite link is invalid or expired\n\nSolutions:\n- Try with a different WhatsApp number\n- Make sure the link is still valid\n- Reconnect or regenerate the bot session.`);
+            reply(`❌ *مش قادر أدخل الجروب 😥*
+
+📌 *السبب المحتمل:*
+- حساب البوت محظور أو واخد بلوك
+- الجلسة خلصت أو خرجت
+- الرابط بايظ أو منتهي
+
+🛠️ *الحل:*
+- جرب رقم تاني
+- تأكد إن الرابط لسه شغال
+- عيد تشغيل البوت أو اعمل جلسة جديدة`);
         } else {
-            reply(`❌ *Unexpected error occurred:*\n\n${e.message || e}`);
+            reply(`❌ *حصل خطأ غير متوقع:*\n\n${e.message || e}`);
         }
     }
 });

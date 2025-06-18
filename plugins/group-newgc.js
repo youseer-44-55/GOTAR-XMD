@@ -3,49 +3,50 @@ const config = require('../config');
 const prefix = config.PREFIX;
 
 cmd({
-  pattern: "newgc",
+  pattern: "جروب",
   category: "group",
   desc: "Create a group with specified members.",
   filename: __filename,
-  use: `${prefix}newgc GroupName + 229XXXXXXXX,229YYYYYYYY`,
+  use: `${prefix}اعمل-جروب اسم_الجروب + رقم1,رقم2`,
   owner: true,
 }, async (conn, mek, m, { body, sender, isOwner, reply }) => {
   try {
-    if (!isOwner) return reply("❌ Only the bot owner can use this command.");
-    if (!body.includes("+")) return reply(`Usage: ${prefix}newgc GroupName + number1,number2`);
+    if (!isOwner) return reply("❌ يا عم دا أمر للمطور وبس 😒✋");
+
+    if (!body.includes("+")) return reply(`ℹ️ الاستخدام الصح: ${prefix}اعمل-جروب اسم_الجروب + رقم1,رقم2`);
 
     const [groupNameRaw, numbersRaw] = body.split("+");
     const groupName = groupNameRaw.trim();
     const numberList = numbersRaw.split(",").map(n => n.trim()).filter(n => /^\d+$/.test(n));
 
-    if (!groupName || numberList.length === 0) return reply("❌ Provide a group name and at least one valid number.");
+    if (!groupName || numberList.length === 0) return reply("😑 لازم تكتب اسم الجروب وكمان رقم واحد على الأقل يا نجم ✨");
 
     const participants = numberList.map(n => `${n}@s.whatsapp.net`);
 
     const group = await conn.groupCreate(groupName, participants);
     const inviteCode = await conn.groupInviteCode(group.id);
 
-    await conn.groupUpdateDescription(group.id, `Group created by @${sender.split('@')[0]}`);
+    await conn.groupUpdateDescription(group.id, `الجروب دا معمول بإيد عمكم @${sender.split('@')[0]} 💪`);
 
     await conn.sendMessage(group.id, {
-      text: `👋 *Welcome to ${groupName}!* Group created by @${sender.split('@')[0]}`,
+      text: `👋 *أهلاً بيكم في جروب "${groupName}"* \nاللي عمله: @${sender.split('@')[0]} 👑`,
       mentions: [sender]
     });
 
-    return reply(`╭━━━〔 *✅ GROUP CREATED SUCCESSFULLY* 〕━━⬣
-┃📛 *Group name:* ${groupName}
-┃👥 *Members added:* ${numberList.length}
+    return reply(`╭━━━〔 ✅ *الجروب اتعمل تمام* 〕━━⬣
+┃📛 *الاسم:* ${groupName}
+┃👥 *عدد اللي دخلوا:* ${numberList.length}
 ┃
-┃📎 *Invitation link:*
+┃📎 *رابط الدعوة:*
 ┃https://chat.whatsapp.com/${inviteCode}
 ╰━━━━━━━━━━━━━━━━━━━━⬣
 
-✨ The group is now ready!
-👤 You are the founder.
-🚀 Invite more people with the link above.`);
-
+🎉 الجروب شغال تمام!
+👤 انت المؤسس يا كبير.
+🚀 ابعت اللينك للناس وخلي الدنيا تولع 🔥`);
+    
   } catch (e) {
     console.error(e);
-    return reply(`❌ *Erreur lors de la création du groupe !*\n\n*Détail:* ${e.message}`);
+    return reply(`❌ حصلت مشكلة وإحنا بنعمل الجروب 😥\n\n📄 *التفاصيل:* ${e.message}`);
   }
 });

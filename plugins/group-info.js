@@ -3,38 +3,38 @@ const { cmd } = require('../command')
 const { fetchJson } = require('../lib/functions')
 
 cmd({
-    pattern: "ginfo",
-    react: "🥏",
-    alias: ["groupinfo"],
-    desc: "Get group informations.",
+    pattern: "معلومات-الجروب",
+    react: "📊",
+    alias: ["ginfo", "جروب", "groupinfo"],
+    desc: "يعرض معلومات الجروب",
     category: "group",
-    use: '.ginfo',
+    use: '.معلومات-الجروب',
     filename: __filename
 },
 async (conn, mek, m, {
     from, isGroup, isAdmins, isBotAdmins, participants, groupMetadata, reply, isDev, isOwner
 }) => {
     try {
-        // Messages par défaut
+        // رسائل افتراضية
         let msr = {
-            only_gp: "This command can only be used in groups.",
-            you_adm: "You must be an admin to use this command.",
-            give_adm: "Please make the bot admin first."
+            only_gp: "الامر دا للجروبات بس يا نجم 💀.",
+            you_adm: "لازم تبقى ادمن يا نجم علشان تشوف البيانات دي 🤨.",
+            give_adm: "ارفعني ادمن الأول وبعدين اطلب اللي انت عايزه 🤖."
         }
 
-        // Essaye de charger les messages personnalisés
+        // محاولة تحميل رسائل مخصصة من الإنترنت
         try {
             const res = await fetchJson('https://raw.githubusercontent.com/JawadTech3/KHAN-DATA/refs/heads/main/MSG/mreply.json')
             if (res?.replyMsg) msr = res.replyMsg
         } catch (e) {
-            console.log('⚠️ Failed to load remote messages, using default ones.')
+            console.log('⚠️ فشل تحميل الرسائل من النت، هستخدم الافتراضية.');
         }
 
         if (!isGroup) return reply(msr.only_gp)
         if (!isAdmins && !isDev && !isOwner) return reply(msr.you_adm)
         if (!isBotAdmins) return reply(msr.give_adm)
 
-        // Récupération de la photo du groupe
+        // صورة الجروب
         let ppUrl
         try {
             ppUrl = await conn.profilePictureUrl(from, 'image')
@@ -47,15 +47,15 @@ async (conn, mek, m, {
         const listAdmin = groupAdmins.map((v, i) => `${i + 1}. @${v.id.split('@')[0]}`).join('\n')
         const owner = metadata.owner || groupAdmins[0]?.id || 'unknown'
 
-        const gdata = `*「 Group Information 」*
+        const gdata = `*「 معلومات الجروب 」*
 
-*Group Name:* ${metadata.subject}
-*Group JID:* ${metadata.id}
-*Participants:* ${metadata.size}
-*Group Owner:* ${owner !== 'unknown' ? '@' + owner.split('@')[0] : 'unknown'}
-*Description:* ${metadata.desc?.toString() || 'undefined'}
+📛 *الاسم:* ${metadata.subject}
+🆔 *الـ ID:* ${metadata.id}
+👥 *عدد الأعضاء:* ${metadata.size}
+👑 *المالك:* ${owner !== 'unknown' ? '@' + owner.split('@')[0] : 'مش معروف 😐'}
+📝 *الوصف:* ${metadata.desc?.toString() || 'مفيش وصف مكتوب 😴'}
 
-*Admins:*
+🛡️ *الادمنية:*
 ${listAdmin}
         `
 
@@ -68,6 +68,6 @@ ${listAdmin}
     } catch (e) {
         await conn.sendMessage(from, { react: { text: '❌', key: mek.key } })
         console.log(e)
-        reply(`❌ *Error Accurated !!*\n\n${e}`)
+        reply(`❌ حصلت مشكلة:\n\n${e}`)
     }
 })

@@ -4,12 +4,12 @@ const { cmd, commands } = require('../command');
 const axios = require('axios');
 
 cmd({
-  pattern: "menu",
-  alias: ["allmenu", "gotar"],
+  pattern: "اوامر",
+  alias: ["m", "lucifer"],
   use: '.menu',
   desc: "Show all bot commands",
   category: "menu",
-  react: "⚡️",
+  react: "🍷",
   filename: __filename
 },
 async (conn, mek, m, { from, reply }) => {
@@ -27,14 +27,14 @@ async (conn, mek, m, { from, reply }) => {
 
     // Menu principal
     let menuText = `
-*╭══ 𝐆𝐎𝐓𝐀𝐑-𝐗𝐌𝐃*
+*╭══ ⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠*
 *┃❃* *ᴜsᴇʀ* : @${m.sender.split("@")[0]}
 *┃❃* *ʀᴜɴᴛɪᴍᴇ* : ${uptime()}
 *┃❃* *ᴍᴏᴅᴇ* : *${config.MODE}*
 *┃❃* *ᴘʀᴇғɪx* : [ ${config.PREFIX} ]
 *┃❃* *ᴩʟᴜɢɪɴ* : ${totalCommands}
-*┃❃* *ᴅᴇᴠ* : *ɢᴏᴛᴀʀ-ᴛᴇᴄʜ*
-*┃❃* *ᴠᴇʀsɪᴏɴs* :
+*┃❃* *ᴅᴇᴠ* : *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪*
+*┃❃* *ᴠᴇʀsɪᴏɴs* : 3MK LUCIFER 🥂✨
 *┕──────────────❒*
 `;
 
@@ -63,15 +63,15 @@ async (conn, mek, m, { from, reply }) => {
 
     // Envoyer l'image avec le menu
     await conn.sendMessage(from, {
-      image: { url: 'https://files.catbox.moe/q0t3l2.jpg' },
+      image: { url: 'https://files.catbox.moe/3qt5au.jpg' },
       caption: selectedStyle,
       contextInfo: {
         mentionedJid: [m.sender],
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363401658098220@newsletter',
-          newsletterName: config.OWNER_NAME || '𝗚𝗢𝗧𝗔𝗥-𝗫𝗠𝗗',
+          newsletterJid: '120363400024202153@newsletter',
+          newsletterName: config.OWNER_NAME || '⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠',
           serverMessageId: 143
         }
       }
@@ -79,6 +79,6 @@ async (conn, mek, m, { from, reply }) => {
 
   } catch (e) {
     console.error(e);
-    reply(`❌ Error: ${e.message}`);
+    reply(`❌ Error ❌: ${e.message}`);
   }
 });

@@ -2,176 +2,147 @@ const { cmd } = require('../command');
 
 // Command to list all pending group join requests
 cmd({
-    pattern: "requestlist",
+    pattern: "قائمه-الطلبات",
     desc: "Shows pending group join requests",
     category: "group",
     react: "📋",
     filename: __filename
 },
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, {
+    from, isGroup, isAdmins, isBotAdmins, reply
+}) => {
     try {
-        await conn.sendMessage(from, {
-            react: { text: '⏳', key: m.key }
-        });
+        await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
         if (!isGroup) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ This command can only be used in groups.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("الأمر دا للحروب بس يعم، متوجعش دماغي برا الجروب 🙄");
         }
+
         if (!isAdmins) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ Only group admins can use this command.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("للأدمن بس يا نجم، وانت مش أدمن أساسًا 🤷🏻‍♂️");
         }
+
         if (!isBotAdmins) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ I need to be an admin to view join requests.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("خليني أدمن الأول يا برنس وبعدين جرب تاني 🤖");
         }
 
         const requests = await conn.groupRequestParticipantsList(from);
         
-        if (requests.length === 0) {
-            await conn.sendMessage(from, {
-                react: { text: 'ℹ️', key: m.key }
-            });
-            return reply("ℹ️ No pending join requests.");
+        if (!requests.length) {
+            await conn.sendMessage(from, { react: { text: 'ℹ️', key: m.key } });
+            return reply("ولا طلب جالك يا نجم، مفيش حد عايز يدخل 😅");
         }
 
-        let text = `📋 *Pending Join Requests (${requests.length})*\n\n`;
+        let text = `الطلبات اللي جت للحرب 💀 (${requests.length}):\n\n`;
         requests.forEach((user, i) => {
-            text += `${i+1}. @${user.jid.split('@')[0]}\n`;
+            text += `${i + 1}- @${user.jid.split('@')[0]}\n`;
         });
 
-        await conn.sendMessage(from, {
-            react: { text: '✅', key: m.key }
-        });
+        await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
         return reply(text, { mentions: requests.map(u => u.jid) });
+
     } catch (error) {
         console.error("Request list error:", error);
-        await conn.sendMessage(from, {
-            react: { text: '❌', key: m.key }
-        });
-        return reply("❌ Failed to fetch join requests.");
+        await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+        return reply("حصلت حاجه غريبة 😅 جرب تاني كده يمكن تتعدل!");
     }
 });
 
 // Command to accept all pending join requests
 cmd({
-    pattern: "acceptall",
+    pattern: "قبول-كل-الطلبات",
     desc: "Accepts all pending group join requests",
     category: "group",
     react: "✅",
     filename: __filename
 },
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, {
+    from, isGroup, isAdmins, isBotAdmins, reply
+}) => {
     try {
-        await conn.sendMessage(from, {
-            react: { text: '⏳', key: m.key }
-        });
+        await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
         if (!isGroup) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ This command can only be used in groups.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("معروفه انها في الجروبات بس، متتغباش 🙁");
         }
+
         if (!isAdmins) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ Only group admins can use this command.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("للأدمن بس يا حتّه، وانت مش واحد منهم 😊");
         }
+
         if (!isBotAdmins) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ I need to be an admin to accept join requests.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("ارفعني أدمن الأول وبطّل تنساني 😂");
         }
 
         const requests = await conn.groupRequestParticipantsList(from);
-        
-        if (requests.length === 0) {
-            await conn.sendMessage(from, {
-                react: { text: 'ℹ️', key: m.key }
-            });
-            return reply("ℹ️ No pending join requests to accept.");
+        if (!requests.length) {
+            await conn.sendMessage(from, { react: { text: 'ℹ️', key: m.key } });
+            return reply("مفيش طلبات أصلًا، انت غاوي تعب ولا ايه 😂😐");
         }
 
         const jids = requests.map(u => u.jid);
         await conn.groupRequestParticipantsUpdate(from, jids, "approve");
+
+        await conn.sendMessage(from, { react: { text: '👍', key: m.key } });
+        return reply(`اتقبلو كلهم ✅❤️\nعددهم: ${requests.length}`);
         
-        await conn.sendMessage(from, {
-            react: { text: '👍', key: m.key }
-        });
-        return reply(`✅ Successfully accepted ${requests.length} join requests.`);
     } catch (error) {
-        console.error("Accept all error:", error);
-        await conn.sendMessage(from, {
-            react: { text: '❌', key: m.key }
-        });
-        return reply("❌ Failed to accept join requests.");
+        console.error("❌ Accept all error:", error);
+        await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+        return reply("في حاجه حصلت، جرب تاني يا نجم 👍🏻");
     }
 });
 
 // Command to reject all pending join requests
 cmd({
-    pattern: "rejectall",
+    pattern: "مسح-كل-الطلبات",
     desc: "Rejects all pending group join requests",
     category: "group",
     react: "❌",
     filename: __filename
 },
-async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
+async (conn, mek, m, {
+    from, isGroup, isAdmins, isBotAdmins, reply
+}) => {
     try {
-        await conn.sendMessage(from, {
-            react: { text: '⏳', key: m.key }
-        });
+        await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
         if (!isGroup) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ This command can only be used in groups.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("جروبات بس يا عمنا 🙄");
         }
+
         if (!isAdmins) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ Only group admins can use this command.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("للأدمن بس يالا 😏");
         }
+
         if (!isBotAdmins) {
-            await conn.sendMessage(from, {
-                react: { text: '❌', key: m.key }
-            });
-            return reply("❌ I need to be an admin to reject join requests.");
+            await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+            return reply("لازم أبقى أدمن 🤔");
         }
 
         const requests = await conn.groupRequestParticipantsList(from);
-        
-        if (requests.length === 0) {
-            await conn.sendMessage(from, {
-                react: { text: 'ℹ️', key: m.key }
-            });
-            return reply("ℹ️ No pending join requests to reject.");
+        if (!requests.length) {
+            await conn.sendMessage(from, { react: { text: 'ℹ️', key: m.key } });
+            return reply("مفيش طلبات نرفضها أصلاً 🙂😂");
         }
 
         const jids = requests.map(u => u.jid);
         await conn.groupRequestParticipantsUpdate(from, jids, "reject");
+
+        await conn.sendMessage(from, { react: { text: '👎', key: m.key } });
+        return reply(`الكل اترفض وبقينا في وحدة 🙂😂\nعددهم: ${requests.length}`);
         
-        await conn.sendMessage(from, {
-            react: { text: '👎', key: m.key }
-        });
-        return reply(`✅ Successfully rejected ${requests.length} join requests.`);
     } catch (error) {
         console.error("Reject all error:", error);
-        await conn.sendMessage(from, {
-            react: { text: '❌', key: m.key }
-        });
-        return reply("❌ Failed to reject join requests.");
+        await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
+        return reply("في بروبلم 🙂😂 جرب تاني.");
     }
 });

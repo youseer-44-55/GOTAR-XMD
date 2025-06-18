@@ -1,25 +1,31 @@
 const config = require('../config')
-const { cmd, commands } = require('../command')
-const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson} = require('../lib/functions')
+const { cmd } = require('../command')
+const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions')
 
 cmd({
-    pattern: "mute",
-    alias: ["groupmute", "group-close"],
+    pattern: "سكوت",
+    alias: ["groupmute", "group-close", "اقفل"],
     react: "🔇",
-    desc: "Mute the group (Only admins can send messages).",
+    desc: "يقفل الجروب (بس الادمن يقدر يرسل).",
     category: "group",
     filename: __filename
-},           
-async (conn, mek, m, { from, isGroup, senderNumber, isAdmins, isBotAdmins, reply }) => {
+},
+async (conn, mek, m, {
+    from, isGroup, isAdmins, isBotAdmins, reply
+}) => {
     try {
-        if (!isGroup) return reply("❌ This command can only be used in groups.");
-        if (!isAdmins) return reply("❌ Only group admins can use this command.");
-        if (!isBotAdmins) return reply("❌ I need to be an admin to mute the group.");
+        if (!isGroup) return reply("❌ الامر دا شغال في الجروبات بس يا معلم❌");
+
+        if (!isAdmins) return reply("❌ مش مسموحلك، دا للادمن بس يا نجم ❌");
+
+        if (!isBotAdmins) return reply("❌ ارفعني ادمن الأول عشان اقدر اقفل الجروب ❌");
 
         await conn.groupSettingUpdate(from, "announcement");
-        reply("✅ Group has been muted. Only admins can send messages.");
+
+        reply("الجروب اتقفل والكلام بقاا لعمكم لوسيفر 🤫🥂");
+
     } catch (e) {
-        console.error("Error muting group:", e);
-        reply("❌ Failed to mute the group. Please try again.");
+        console.error("Mute Error:", e);
+        reply("❌ حصلت مشكلة وانا بقفل الجروب، جرب تاني.");
     }
 });
