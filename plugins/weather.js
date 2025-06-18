@@ -1,41 +1,43 @@
 const axios = require('axios');
-const config = require('../config');
-const { cmd, commands } = require('../command');
+const { cmd } = require('../command');
+
 cmd({
-    pattern: "weather",
-    desc: "🌤 Get weather information for a location",
+    pattern: "الطقس",
+    alias: ["weather", "جو", "احوال_الطقس"],
+    desc: "⛅ اعرف الجو عامل إزاي في أي حته",
     react: "🌤",
     category: "other",
     filename: __filename
 },
 async (conn, mek, m, { from, q, reply }) => {
     try {
-        if (!q) return reply("❗ Please provide a city name. Usage: .weather [city name]");
-        const apiKey = '2d61a72574c11c4f36173b627f8cb177'; 
+        if (!q) return reply("🌆 اكتب اسم المدينة يا معلم، مثال:\n*الطقس القاهرة*");
+
+        const apiKey = '2d61a72574c11c4f36173b627f8cb177'; // مفتاح API
         const city = q;
         const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
         const response = await axios.get(url);
         const data = response.data;
-        const weather = `
-> 🌍 *Weather Information for ${data.name}, ${data.sys.country}* 🌍
-> 🌡️ *Temperature*: ${data.main.temp}°C
-> 🌡️ *Feels Like*: ${data.main.feels_like}°C
-> 🌡️ *Min Temp*: ${data.main.temp_min}°C
-> 🌡️ *Max Temp*: ${data.main.temp_max}°C
-> 💧 *Humidity*: ${data.main.humidity}%
-> ☁️ *Weather*: ${data.weather[0].main}
-> 🌫️ *Description*: ${data.weather[0].description}
-> 💨 *Wind Speed*: ${data.wind.speed} m/s
-> 🔽 *Pressure*: ${data.main.pressure} hPa
 
-> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*`;
-        return reply(weather);
+        const weatherMessage = `🌤 *الجو عامل إزاي في ${data.name}, ${data.sys.country}?*
+
+🔥 *الحرارة:* ${data.main.temp}°C  
+🥵 *حاسس بإيه:* ${data.main.feels_like}°C  
+📉 *أقل حرارة:* ${data.main.temp_min}°C  
+📈 *أعلى حرارة:* ${data.main.temp_max}°C  
+💧 *الرطوبة:* ${data.main.humidity}%  
+🌫️ *الوصف:* ${data.weather[0].description}  
+🌪️ *الهواء بيجري بسرعة:* ${data.wind.speed} m/s  
+🔽 *الضغط الجوي:* ${data.main.pressure} hPa  
+
+📡 *بيانات جايه من عمك لوسيفر وطقس العالم 🤓*`;
+
+        return reply(weatherMessage);
     } catch (e) {
-        console.log(e);
+        console.error(e);
         if (e.response && e.response.status === 404) {
-            return reply("🚫 City not found. Please check the spelling and try again.");
+            return reply("😐 مش لاقي المدينة دي، انت كاتبها صح؟ جرب تاني يا غالي.");
         }
-        return reply("⚠️ An error occurred while fetching the weather information. Please try again later.");
+        return reply("💥 في حاجه ضربت وملحقتش أجيبلك الجو، جرب كمان شويه!");
     }
 });
-                 

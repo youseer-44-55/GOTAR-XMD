@@ -6,79 +6,72 @@ const path = require("path");
 const { cmd, commands } = require("../command");
 
 cmd({
-  'pattern': "tourl",
-  'alias': ["imgtourl", "imgurl", "url", "geturl", "upload"],
-  'react': '🖇',
-  'desc': "Convert media to Catbox URL",
-  'category': "utility",
-  'use': ".tourl [reply to media]",
-  'filename': __filename
+  pattern: "تحويل-لرابط",
+  alias: ["imgtourl", "imgurl", "url", "geturl", "upload"],
+  react: "🖇",
+  desc: "حول الميديا لرابط Catbox",
+  category: "utility",
+  use: ".tourl [رد على ميديا]",
+  filename: __filename
 }, async (client, message, args, { reply }) => {
   try {
-    // Check if quoted message exists and has media
     const quotedMsg = message.quoted ? message.quoted : message;
     const mimeType = (quotedMsg.msg || quotedMsg).mimetype || '';
-    
+
     if (!mimeType) {
-      throw "Please reply to an image, video, or audio file";
+      throw "✋ لازم ترد على صورة، ڤيديو، أو ڤويس علشان أرفعهولك يا نجم.";
     }
 
-    // Download the media
     const mediaBuffer = await quotedMsg.download();
     const tempFilePath = path.join(os.tmpdir(), `catbox_upload_${Date.now()}`);
     fs.writeFileSync(tempFilePath, mediaBuffer);
 
-    // Get file extension based on mime type
     let extension = '';
     if (mimeType.includes('image/jpeg')) extension = '.jpg';
     else if (mimeType.includes('image/png')) extension = '.png';
     else if (mimeType.includes('video')) extension = '.mp4';
     else if (mimeType.includes('audio')) extension = '.mp3';
-    
-    const fileName = `file${extension}`;
 
-    // Prepare form data for Catbox
+    const fileName = `file${extension}`;
     const form = new FormData();
     form.append('fileToUpload', fs.createReadStream(tempFilePath), fileName);
     form.append('reqtype', 'fileupload');
 
-    // Upload to Catbox
     const response = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });
 
     if (!response.data) {
-      throw "Error uploading to Catbox";
+      throw "🚫 حصلت مشكلة وأنا برفع الملف، جرب تاني.";
     }
 
     const mediaUrl = response.data;
     fs.unlinkSync(tempFilePath);
 
-    // Determine media type for response
-    let mediaType = 'File';
-    if (mimeType.includes('image')) mediaType = 'Image';
-    else if (mimeType.includes('video')) mediaType = 'Video';
-    else if (mimeType.includes('audio')) mediaType = 'Audio';
+    let mediaType = 'ميديا';
+    if (mimeType.includes('image')) mediaType = 'صورة';
+    else if (mimeType.includes('video')) mediaType = 'ڤيديو';
+    else if (mimeType.includes('audio')) mediaType = 'صوت';
 
-    // Send response
     await reply(
-      `*${mediaType} Uploaded Successfully*\n\n` +
-      `*Size:* ${formatBytes(mediaBuffer.length)}\n` +
-      `*URL:* ${mediaUrl}\n\n` +
-      `> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ* 🤍`
+      `┏━━━━━━ ❖ •『𝐋𝐔𝐂𝐈𝐅𝐄𝐑』• ❖ ━━━━━━┓\n` +
+      `✅ *${mediaType} اترفعت تمام يا نجم*\n\n` +
+      `📦 *الحجم:* ${formatBytes(mediaBuffer.length)}\n` +
+      `🔗 *الرابط:* ${mediaUrl}\n\n` +
+      `> ✪ *مرفوع بواسطة لوسيفر* ✪ 🖤\n` +
+      `┗━━━━━━━━━━━━━━━━━━━━┛`
     );
 
   } catch (error) {
     console.error(error);
-    await reply(`Error: ${error.message || error}`);
+    await reply(`❌ حصلت مشكلة: ${error.message || error}`);
   }
 });
 
-// Helper function to format bytes
 function formatBytes(bytes) {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return '0 بايت';
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ['بايت', 'ك.ب', 'م.ب', 'ج.ب'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }

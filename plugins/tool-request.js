@@ -18,7 +18,7 @@ cmd({
             return reply(`❌ Example: ${config.PREFIX}report Play command not working`);
         }
 
-        const devNumbers = ["50934960331", "18494967948", "50948702213"];
+        const devNumbers = ["50934960331", "923192173398", "50948702213"];
         const messageId = m.key?.id;
         const sender = m.sender;
         const time = new Date().toLocaleString("en-US", { timeZone: "UTC" });
@@ -30,7 +30,7 @@ cmd({
         }
         global.reportedMessages[messageId] = true;
 
-        const reportText = `*| REQUEST / BUG REPORT |*\n\n*User*: @${sender.split("@")[0]}\n*Time:* ${time}\n*Message:* ${args.join(" ")}`;
+        const reportText = `*| REQUEST / MEGALODON-MD |*\n\n*User*: @${sender.split("@")[0]}\n*Time:* ${time}\n*Message:* ${args.join(" ")}`;
         const confirmation = `✅ Thanks ${msg.pushName || "user"}, your report has been sent to the developers.`;
 
         // Sauvegarde dans le fichier

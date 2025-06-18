@@ -2,52 +2,23 @@ const { cmd } = require('../command');
 const axios = require('axios');
 
 cmd({
-    pattern: "aivoice",
-    alias: ["vai", "voicex", "voiceai"],
+    pattern: "اصوات-ذكاء-اصطناعي",
+    alias: ["aiv", "voicex", "voiceai"],
     desc: "Text to speech with different AI voices",
     category: "main",
     react: "🪃",
     filename: __filename
 },
-async (conn, mek, m, { 
-    from, 
-    quoted, 
-    body, 
-    isCmd, 
-    command, 
-    args, 
-    q, 
-    isGroup, 
-    sender, 
-    senderNumber, 
-    botNumber2, 
-    botNumber, 
-    pushname, 
-    isMe, 
-    isOwner, 
-    groupMetadata, 
-    groupName, 
-    participants, 
-    groupAdmins, 
-    isBotAdmins, 
-    isAdmins, 
-    reply 
-}) => {
+async (conn, mek, m, { reply, from, args }) => {
     try {
-        // Check if args[0] exists (user provided text)
-        if (!args[0]) {
-            return reply("Please provide text after the command.\nExample: .aivoice hello");
-        }
+        if (!args[0]) return reply("✍️ اكتبلي الكلام اللي عايزني اقوله بصوت روبوت يا برنس\nمثال: .aivoice انا جامد");
 
-        // Get the full input text
         const inputText = args.join(' ');
 
-        // Send initial reaction
-        await conn.sendMessage(from, {  
-            react: { text: '⏳', key: m.key }  
+        await conn.sendMessage(from, {
+            react: { text: '⏳', key: m.key }
         });
 
-        // Voice model menu
         const voiceModels = [
             { number: "1", name: "Hatsune Miku", model: "miku" },
             { number: "2", name: "Nahida (Exclusive)", model: "nahida" },
@@ -63,94 +34,85 @@ async (conn, mek, m, {
             { number: "12", name: "Eminem", model: "eminem" }
         ];
 
-        // Create menu text
-        let menuText = "╭━━━〔 *AI VOICE MODELS* 〕━━━⊷\n";
+        let menuText = "╭━━━〔 🎤 *اختار الصوت يا نجم* 〕━━━⊷\n";
         voiceModels.forEach(model => {
-            menuText += `┃▸ ${model.number}. ${model.name}\n`;
+            menuText += `┃ ${model.number}. ${model.name}\n`;
         });
         menuText += "╰━━━⪼\n\n";
-        menuText += `📌 *Reply with the number to select voice model for:*\n"${inputText}"`;
+        menuText += `🎧 *رد برقم الصوت اللي هيقول الجمله دي:*\n"${inputText}"`;
 
-        // Send menu message with image
-        const sentMsg = await conn.sendMessage(from, {  
-            image: { url: "https://files.catbox.moe/82b8gr.jpg" },
+        const sentMsg = await conn.sendMessage(from, {
+            image: { url: "https://files.catbox.moe/3qt5au.jpg" },
             caption: menuText
         }, { quoted: m });
 
         const messageID = sentMsg.key.id;
         let handlerActive = true;
 
-        // Set timeout to remove handler after 2 minutes
         const handlerTimeout = setTimeout(() => {
             handlerActive = false;
             conn.ev.off("messages.upsert", messageHandler);
-            reply("⌛ Voice selection timed out. Please try the command again.");
+            reply("⌛ الوقت خلص يا غالي، ابعت الأمر تاني لو عايز تجرب تاني.");
         }, 120000);
 
-        // Message handler function
-        const messageHandler = async (msgData) => {  
+        const messageHandler = async (msgData) => {
             if (!handlerActive) return;
-            
-            const receivedMsg = msgData.messages[0];  
-            if (!receivedMsg || !receivedMsg.message) return;  
 
-            const receivedText = receivedMsg.message.conversation || 
-                              receivedMsg.message.extendedTextMessage?.text || 
-                              receivedMsg.message.buttonsResponseMessage?.selectedButtonId;  
-            const senderID = receivedMsg.key.remoteJid;  
-            const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;  
+            const receivedMsg = msgData.messages[0];
+            if (!receivedMsg || !receivedMsg.message) return;
 
-            if (isReplyToBot && senderID === from) {  
+            const receivedText = receivedMsg.message.conversation ||
+                receivedMsg.message.extendedTextMessage?.text ||
+                receivedMsg.message.buttonsResponseMessage?.selectedButtonId;
+
+            const senderID = receivedMsg.key.remoteJid;
+            const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
+
+            if (isReplyToBot && senderID === from) {
                 clearTimeout(handlerTimeout);
                 conn.ev.off("messages.upsert", messageHandler);
                 handlerActive = false;
 
-                await conn.sendMessage(senderID, {  
-                    react: { text: '⬇️', key: receivedMsg.key }  
-                });  
+                await conn.sendMessage(senderID, {
+                    react: { text: '⬇️', key: receivedMsg.key }
+                });
 
                 const selectedNumber = receivedText.trim();
                 const selectedModel = voiceModels.find(model => model.number === selectedNumber);
 
                 if (!selectedModel) {
-                    return reply("❌ Invalid option! Please reply with a number from the menu.");
+                    return reply("❌ ده مش اختيار من اللي فوق يا نجم.. اختار رقم مظبوط!");
                 }
 
                 try {
-                    // Show processing message
-                    await conn.sendMessage(from, {  
-                        text: `🔊 Generating audio with ${selectedModel.name} voice...`  
+                    await conn.sendMessage(from, {
+                        text: `🔊 شغاللك الصوت بتاع *${selectedModel.name}* يا معلم... استنى شوية`
                     }, { quoted: receivedMsg });
 
-                    // Call the API
                     const apiUrl = `https://api.agatz.xyz/api/voiceover?text=${encodeURIComponent(inputText)}&model=${selectedModel.model}`;
-                    const response = await axios.get(apiUrl, {
-                        timeout: 30000 // 30 seconds timeout
-                    });
-                    
+                    const response = await axios.get(apiUrl, { timeout: 30000 });
+
                     const data = response.data;
 
                     if (data.status === 200) {
-                        await conn.sendMessage(from, {  
-                            audio: { url: data.data.oss_url },  
+                        await conn.sendMessage(from, {
+                            audio: { url: data.data.oss_url },
                             mimetype: "audio/mpeg"
-                            // Removed ptt: true to send as regular audio
                         }, { quoted: receivedMsg });
                     } else {
-                        reply("❌ Error generating audio. Please try again.");
+                        reply("❌ حصل حاجه غريبة.. معرفتش أجيبلك الصوت 😢 جرب تاني.");
                     }
                 } catch (error) {
                     console.error("API Error:", error);
-                    reply("❌ Error processing your request. Please try again.");
+                    reply("💀 الدنيا هنجت مني.. جرب تاني كده أو اصبر شوية.");
                 }
-            }  
+            }
         };
 
-        // Register the handler
         conn.ev.on("messages.upsert", messageHandler);
 
     } catch (error) {
         console.error("Command Error:", error);
-        reply("❌ An error occurred. Please try again.");
+        reply("❌ في حاجه ضربت ف المخ 🤯.. جرب تاني.");
     }
 });

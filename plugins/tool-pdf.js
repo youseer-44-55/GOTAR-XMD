@@ -3,8 +3,9 @@ const PDFDocument = require('pdfkit');
 const { Buffer } = require('buffer');
 
 cmd({
-    pattern: "topdf",
-    alias: ["pdf","topdf"],use: '.topdf',
+    pattern: "PDF",
+    alias: ["pdf","topdf"],
+    use: '.topdf',
     desc: "Convert provided text to a PDF file.",
     react: "📄",
     category: "utilities",
@@ -12,36 +13,47 @@ cmd({
 },
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
-        if (!q) return reply("Please provide the text you want to convert to PDF. *Eg* `.topdf` *megalodon-md*");
+        if (!q) return reply("❗ من فضلك اكتب الكلام اللي عايز تحوله لملف PDF.\n\nمثال: `.topdf` *الذكاء الاصطناعي مستقبل العالم*");
 
-        // Create a new PDF document
-        const doc = new PDFDocument();
+        // إعداد ملف PDF
+        const doc = new PDFDocument({
+            size: 'A4',
+            margin: 50
+        });
+
         let buffers = [];
         doc.on('data', buffers.push.bind(buffers));
         doc.on('end', async () => {
             const pdfData = Buffer.concat(buffers);
 
-            // Send the PDF file
             await conn.sendMessage(from, {
                 document: pdfData,
                 mimetype: 'application/pdf',
-                fileName: 'Gotar.pdf',
-                caption: `
-*📄 PDF created successully!*
-
-> © *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ* 🤍`
+                fileName: 'LuciferText.pdf',
+                caption: `✅ *تم إنشاء ملف PDF بنجاح!*\n\n🔖 *Powered by Lucifer Bot 😈*`
             }, { quoted: mek });
         });
 
-        // Add text to the PDF
-        doc.text(q);
+        // تنسيقات داخلية للنص
+        doc.font('Times-Roman')
+            .fontSize(16)
+            .fillColor('black')
+            .text(q, {
+                align: 'right',
+                lineGap: 8
+            });
 
-        // Finalize the PDF and end the stream
+        // خط تحت باسم البوت
+        doc.moveDown();
+        doc.fontSize(12).fillColor('gray')
+            .text(`\n— بواسطة بوت لوسيفر 😈`, {
+                align: 'center'
+            });
+
         doc.end();
 
     } catch (e) {
         console.error(e);
-        reply(`Error: ${e.message}`);
+        reply(`❌ حصل خطأ أثناء إنشاء الـ PDF:\n${e.message}`);
     }
 });
-                      

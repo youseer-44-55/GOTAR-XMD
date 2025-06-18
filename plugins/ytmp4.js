@@ -10,8 +10,8 @@ function replaceYouTubeID(url) {
 }
 
 cmd({
-    pattern: "song",
-    alias: ["mp4", "video"],
+    pattern: "فيديو-يوتيوب",
+    alias: ["فيديو", "video"],
     react: "🎬",
     desc: "Download Ytmp4",
     category: "download",
@@ -19,7 +19,7 @@ cmd({
     filename: __filename
 }, async (conn, m, mek, { from, q, reply }) => {
     try {
-        if (!q) return await reply("❌ Please provide a Query or Youtube URL!");
+        if (!q) return await reply("استخدم الامر كده (فيديو-يوتيوب لينك الفيديو) وبعد كده اختار (2.1 فيديو)&(2.2 ملف) ❤️👍🏻");
 
         let id = q.startsWith("https://") ? replaceYouTubeID(q) : null;
         let videoData;
@@ -35,28 +35,29 @@ cmd({
             videoData = searchResults.results[0];
         }
 
-        // Préchargement du MP4
         const preloadedVideo = dy_scrap.ytmp4(`https://youtube.com/watch?v=${id}`);
-
         const { url, title, image, timestamp, ago, views, author } = videoData;
 
-        let info = `🎥 *𝚅𝙸𝙳𝙴𝙾 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁* 🎥\n\n` +
-            `🎬 *Title:* ${title || "Unknown"}\n` +
-            `⏱ *Duration:* ${timestamp || "Unknown"}\n` +
-            `👁 *Views:* ${views || "Unknown"}\n` +
-            `📅 *Release Ago:* ${ago || "Unknown"}\n` +
-            `👤 *Author:* ${author?.name || "Unknown"}\n` +
-            `🔗 *Url:* ${url || "Unknown"}\n\n` +
-            `🎞 *Reply with your choice:*\n` +
-            `2.1 *Video Type* 🎬\n` +
-            `2.2 *Document Type* 📁\n\n` +
-            `${config.FOOTER || "> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*"}`;
+        let info = `╭───⌈  🎥 *قائمة التنزيل*  ⌋
+│
+│ 🎬 *العنوان:* ${title || "غير معروف"}
+│ ⏱ *المدة:* ${timestamp || "غير معروف"}
+│ 👁 *المشاهدات:* ${views || "غير معروف"}
+│ 📅 *منذ:* ${ago || "غير معروف"}
+│ 👤 *القناة:* ${author?.name || "غير معروف"}
+│ 🔗 *الرابط:* ${url || "غير معروف"}
+│
+├───⌈  *اختار نوع التنزيل:*  ⌋
+│
+│ 2.1 🎥 *فيديو مباشر*
+│ 2.2 📁 *فيديو ملف*
+│
+╰───⌈  ✪『𝐋𝐔𝐂𝐈𝐅𝐄𝐑』✪  ⌋`;
 
         const sentMsg = await conn.sendMessage(from, { image: { url: image }, caption: info }, { quoted: mek });
         const messageID = sentMsg.key.id;
         await conn.sendMessage(from, { react: { text: '🎥', key: sentMsg.key } });
 
-        // Écoute réponse unique
         const listener = async (messageUpdate) => {
             try {
                 const mekInfo = messageUpdate?.messages[0];
@@ -78,10 +79,10 @@ cmd({
                 if (!downloadUrl) return await reply("❌ Download link not found!");
 
                 if (userReply === "2.1") {
-                    msg = await conn.sendMessage(from, { text: "⏳ Processing..." }, { quoted: mek });
+                    msg = await conn.sendMessage(from, { text: "⏳ جاري تجهيز الفيديو..." }, { quoted: mek });
                     type = { video: { url: downloadUrl }, mimetype: "video/mp4", caption: title };
                 } else if (userReply === "2.2") {
-                    msg = await conn.sendMessage(from, { text: "⏳ Processing..." }, { quoted: mek });
+                    msg = await conn.sendMessage(from, { text: "⏳ جاري تجهيز الملف..." }, { quoted: mek });
                     type = {
                         document: { url: downloadUrl },
                         fileName: `${title}.mp4`,
@@ -89,15 +90,15 @@ cmd({
                         caption: title
                     };
                 } else {
-                    return await reply("❌ Invalid choice! Reply with 2.1 or 2.2.");
+                    return await reply("❌ اختار صح! اكتب 2.1 أو 2.2.");
                 }
 
                 await conn.sendMessage(from, type, { quoted: mek });
-                await conn.sendMessage(from, { text: '✅ Media Upload Successful ✅', edit: msg.key });
+                await conn.sendMessage(from, { text: '✅ تم الرفع بنجاح ✅', edit: msg.key });
 
             } catch (error) {
                 console.error(error);
-                await reply(`❌ *An error occurred while processing:* ${error.message || "Error!"}`);
+                await reply(`❌ *حصلت مشكلة أثناء المعالجة:* ${error.message || "Error!"}`);
             }
         };
 
@@ -106,6 +107,6 @@ cmd({
     } catch (error) {
         console.error(error);
         await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
-        await reply(`❌ *An error occurred:* ${error.message || "Error!"}`);
+        await reply(`❌ *حصلت مشكلة:* ${error.message || "Error!"}`);
     }
 });

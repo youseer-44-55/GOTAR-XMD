@@ -1,11 +1,11 @@
 const config = require('../config')
 const { cmd, commands } = require('../command')
-const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson} = require('../lib/functions')
+const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions')
 
 cmd({
-    pattern: "tagadmins",
+    pattern: "منشن-للادمن",
     react: "👑",
-    alias: ["gc_tagadmins"],
+    alias: ["منشن-للخرفان"],
     desc: "To Tag all Admins of the Group",
     category: "group",
     use: '.tagadmins [message]',
@@ -13,40 +13,55 @@ cmd({
 },
 async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAdmins, prefix, command, args, body }) => {
     try {
-        if (!isGroup) return reply("❌ This command can only be used in groups.");
-        
-        const botOwner = conn.user.id.split(":")[0]; // Extract bot owner's number
+        if (!isGroup) return reply("❌ الأمر ده للجروبات بس يسطا.");
+
+        const botOwner = conn.user.id.split(":")[0];
         const senderJid = senderNumber + "@s.whatsapp.net";
 
-        // Ensure group metadata is fetched properly
         let groupInfo = await conn.groupMetadata(from).catch(() => null);
-        if (!groupInfo) return reply("❌ Failed to fetch group information.");
+        if (!groupInfo) return reply("❌ معرفتش اجيب بيانات الجروب.");
 
-        let groupName = groupInfo.subject || "Unknown Group";
+        let groupName = groupInfo.subject || "جروب من الجروبات";
         let admins = await getGroupAdmins(participants);
         let totalAdmins = admins ? admins.length : 0;
-        if (totalAdmins === 0) return reply("❌ No admins found in this group.");
+        if (totalAdmins === 0) return reply("❌ مفيش ولا أدمن هنا يسطا؟ غريبه والله.");
 
-        let emojis = ['👑', '⚡', '🌟', '✨', '🎖️', '💎', '🔱', '🛡️', '🚀', '🏆'];
-        let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-
-        // Proper message extraction
+        // استخراج الرسالة
         let message = body.slice(body.indexOf(command) + command.length).trim();
-        if (!message) message = "Attention Admins"; // Default message
+        if (!message) message = "قوموا يا خراف الإداره، الدنيا ولعت 🔥😂";
 
-        let teks = `▢ Group : *${groupName}*\n▢ Admins : *${totalAdmins}*\n▢ Message: *${message}*\n\n┌───⊷ *ADMIN MENTIONS*\n`;
+        let teks = `
+╔═━━━━✪⛥✪━━━━═╗
+     👑 *نداء خاص لأدمنز الجروب* 👑
+╚═━━━━✪⛥✪━━━━═╝
+
+📛 *الجروب:* ${groupName}
+🧠 *عدد العلقات الأدمنز:* ${totalAdmins}
+💌 *رسالة عمكم لوسيفر:* 
+*${message}*
+
+━━━━━━━━━━━━━━━
+
+🎯 *الأدمنز تحت المقص 🔪:*
+`;
 
         for (let admin of admins) {
-            if (!admin) continue; // Prevent undefined errors
-            teks += `${randomEmoji} @${admin.split('@')[0]}\n`;
+            if (!admin) continue;
+            teks += `🔺 @${admin.split('@')[0]} ← فوق ياض انت وهو 😒\n`;
         }
 
-        teks += "└──✪ GOTAR-XMD ✪──";
+        teks += `
+━━━━━━━━━━━━━━━
+🕶️ *الراعي الرسمي للمنشن:* عمكم لوسيفر 💀
+⏰ *الوقت:* ${new Date().toLocaleTimeString('ar-EG')}
+
+⛔ اللي مش هيرد... هنكتب عليه مفقود من الجروب قريبًا 💔🪦
+`;
 
         conn.sendMessage(from, { text: teks, mentions: admins }, { quoted: mek });
 
     } catch (e) {
         console.error("TagAdmins Error:", e);
-        reply(`❌ *Error Occurred !!*\n\n${e.message || e}`);
+        reply(`❌ *حصلت مشكله !!*\n\n${e.message || e}`);
     }
 });

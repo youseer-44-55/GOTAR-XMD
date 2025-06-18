@@ -11,16 +11,16 @@ const Config = require('../config');
 
 cmd(
     {
-        pattern: 'take',
-        alias: ['rename', 'stake'],
+        pattern: 'سرقه',
+        alias: ['t', 'stake'],
         desc: 'Create a sticker with a custom pack name.',
         category: 'sticker',
         use: '<reply media or URL>',
         filename: __filename,
     },
     async (conn, mek, m, { quoted, args, q, reply, from }) => {
-        if (!mek.quoted) return reply(`*Reply to any sticker.*`);
-        if (!q) return reply(`*Please provide a pack name using .take <packname>*`);
+        if (!mek.quoted) return reply(`*رد على استيكر يا كتكوت 🫵😂*`);
+        if (!q) return reply(`*فين اسم الاستيكر يا حلو؟ رد على الاستيكر وقول الاسم بقا 🥴🔥*`);
 
         let mime = mek.quoted.mtype;
         let pack = q;
@@ -38,16 +38,15 @@ cmd(
             const buffer = await sticker.toBuffer();
             return conn.sendMessage(mek.chat, { sticker: buffer }, { quoted: mek });
         } else {
-            return reply("*Uhh, Please reply to an image.*");
+            return reply("*رد على الاستيكر باسمك يا فنان 😎*");
         }
     }
 );
-
 //Sticker create 
 
 cmd(
     {
-        pattern: 'sticker',
+        pattern: 'استيكر',
         alias: ['s', 'stickergif'],
         desc: 'Create a sticker from an image, video, or URL.',
         category: 'sticker',
@@ -55,7 +54,7 @@ cmd(
         filename: __filename,
     },
     async (conn, mek, m, { quoted, args, q, reply, from }) => {
-        if (!mek.quoted) return reply(`*Reply to any Image or Video, Sir.*`);
+        if (!mek.quoted) return reply(`*رد على الصورة ولا الفيديو يا حب 🫣✨*`);
         let mime = mek.quoted.mtype;
         let pack = Config.STICKER_NAME;
         
@@ -72,9 +71,7 @@ cmd(
             const buffer = await sticker.toBuffer();
             return conn.sendMessage(mek.chat, { sticker: buffer }, { quoted: mek });
         } else {
-            return reply("*Uhh, Please reply to an image.*");
+            return reply("*رد على الصورة أو الفيديو يا نينجا 😂📸*");
         }
     }
 );
-
-// JawadTechX

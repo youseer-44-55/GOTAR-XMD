@@ -4,17 +4,17 @@ const {cmd , commands} = require('../command')
 const googleTTS = require('google-tts-api')
 
 cmd({
-    pattern: "trt",
-    alias: ["translate"],
+    pattern: "ترجمه",
+    alias: ["tr"],
     desc: "🌍 Translate text between languages",
-    react: "⚡",
+    react: "🌍",
     category: "other",
     filename: __filename
 },
 async (conn, mek, m, { from, q, reply }) => {
     try {
         const args = q.split(' ');
-        if (args.length < 2) return reply("❗ Please provide a language code and text. Usage: .translate [language code] [text]");
+        if (args.length < 2) return reply("استعمل الامر كده (ترجمه كود اللغه زي مثلا en للانجليزي وبعد كده النص الي عايز تترجمو) 👍🏻❤️");
 
         const targetLang = args[0];
         const textToTranslate = args.slice(1).join(' ');
@@ -24,7 +24,7 @@ async (conn, mek, m, { from, q, reply }) => {
         const response = await axios.get(url);
         const translation = response.data.responseData.translatedText;
 
-        const translationMessage = `> *GOTAR-XMD-TRANSLATION*
+        const translationMessage = `> *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪-TRANSLATION*
 
 > 🔤 *Original*: ${textToTranslate}
 
@@ -35,13 +35,13 @@ async (conn, mek, m, { from, q, reply }) => {
         return reply(translationMessage);
     } catch (e) {
         console.log(e);
-        return reply("⚠️ An error occurred data while translating the your text. Please try again later🤕");
+        return reply("مش عارف اترجم معييش لغات في مشكله هاخد.كورس واجي 😂👍🏻");
     }
 });
 
 //____________________________TTS___________________________
 cmd({
-    pattern: "tts",
+    pattern: "نص-لصوت",
     desc: "download songs",
     category: "download",
     react: "👧",
@@ -49,9 +49,9 @@ cmd({
 },
 async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
 try{
-if(!q) return reply("Need some text.")
+if(!q) return reply("اكتب النص.")
     const url = googleTTS.getAudioUrl(q, {
-  lang: 'hi-IN',
+  lang: 'ar',
   slow: false,
   host: 'https://translate.google.com',
 })

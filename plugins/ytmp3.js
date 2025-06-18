@@ -10,53 +10,58 @@ function replaceYouTubeID(url) {
 }
 
 cmd({
-    pattern: "play",
-    alias: ["mp3", "ytmp3"],
+    pattern: "اغنيه",
+    alias: ["sond", "ytmp3"],
     react: "🎵",
     desc: "Download Ytmp3",
     category: "download",
-    use: ".song <Text or YT URL>",
+    use: ".اغنيه <اسم أو لينك>",
     filename: __filename
 }, async (conn, m, mek, { from, q, reply }) => {
     try {
-        if (!q) return await reply("❌ Please provide a Query or Youtube URL!");
+        if (!q) return await reply("استخدم الامر كده:\n\nاغنيه عمرو دياب - تملي معاك\n\nوهرد عليك بـ (1.1 للاغنيه) أو (1.2 للملف الصوتي) ❤️");
 
         let id = q.startsWith("https://") ? replaceYouTubeID(q) : null;
         let videoData;
 
         if (!id) {
             const searchResults = await dy_scrap.ytsearch(q);
-            if (!searchResults?.results?.length) return await reply("❌ No results found!");
+            if (!searchResults?.results?.length) return await reply("❌ مفيش نتائج يا نجم!");
             videoData = searchResults.results[0];
             id = videoData.videoId;
         } else {
             const searchResults = await dy_scrap.ytsearch(`https://youtube.com/watch?v=${id}`);
-            if (!searchResults?.results?.length) return await reply("❌ Failed to fetch video!");
+            if (!searchResults?.results?.length) return await reply("❌ معرفتش أجيب بيانات الفيديو!");
             videoData = searchResults.results[0];
         }
 
-        // Pré-chargement du MP3
         const preloadedAudio = dy_scrap.ytmp3(`https://youtube.com/watch?v=${id}`);
-
         const { url, title, image, timestamp, ago, views, author } = videoData;
 
-        let info = `🍄 *𝚂𝙾𝙽𝙶 𝙳𝙾𝚆𝙽𝙻𝙾𝙰𝙳𝙴𝚁* 🍄\n\n` +
-            `🎵 *Title:* ${title || "Unknown"}\n` +
-            `⏳ *Duration:* ${timestamp || "Unknown"}\n` +
-            `👀 *Views:* ${views || "Unknown"}\n` +
-            `🌏 *Release Ago:* ${ago || "Unknown"}\n` +
-            `👤 *Author:* ${author?.name || "Unknown"}\n` +
-            `🖇 *Url:* ${url || "Unknown"}\n\n` +
-            `🔽 *Reply with your choice:*\n` +
-            `1.1 *Audio Type* 🎵\n` +
-            `1.2 *Document Type* 📁\n\n` +
-            `${config.FOOTER || "> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*"}`;
+        let info = `╭── 🍃 *معلومات الأغنية* 🍃
+│
+├ 🎶 *الاسم:* ${title}
+├ 🕓 *المده:* ${timestamp || "غير متوفرة"}
+├ 👀 *عدد المشاهدات:* ${views}
+├ 📆 *من امتى:* ${ago}
+├ 🎤 *المطرب:* ${author?.name}
+├ 🔗 *رابط الفيديو:* ${url}
+│
+╰───◇◆◇───
+
+╭── 🔽 *اختار نوع التحميل* 🔽
+│
+├ 1.1 🎵 *صوت عادي* (تشغيل مباشر)
+├ 1.2 📁 *ملف صوتي* (ينفع تبعته لأي حد)
+│
+╰── ✍️ *رد على الرسالة بالرقم المناسب* 
+
+> ${config.FOOTER || "✪『𝐋𝐔𝐂𝐈𝐅𝐄𝐑』✪"}`;
 
         const sentMsg = await conn.sendMessage(from, { image: { url: image }, caption: info }, { quoted: mek });
         const messageID = sentMsg.key.id;
         await conn.sendMessage(from, { react: { text: '🎶', key: sentMsg.key } });
 
-        // Gestion unique de réponse utilisateur
         const listener = async (messageUpdate) => {
             try {
                 const mekInfo = messageUpdate?.messages[0];
@@ -67,7 +72,7 @@ cmd({
 
                 if (!isReplyToSentMsg) return;
 
-                conn.ev.off('messages.upsert', listener); // retire le listener après première réponse
+                conn.ev.off('messages.upsert', listener); // وقف الاستماع بعد أول رد
 
                 let userReply = messageType.trim();
                 let msg;
@@ -75,13 +80,13 @@ cmd({
                 let response = await preloadedAudio;
 
                 const downloadUrl = response?.result?.download?.url;
-                if (!downloadUrl) return await reply("❌ Download link not found!");
+                if (!downloadUrl) return await reply("❌ معرفتش أوصل لرابط التحميل!");
 
                 if (userReply === "1.1") {
-                    msg = await conn.sendMessage(from, { text: "⏳ Processing..." }, { quoted: mek });
+                    msg = await conn.sendMessage(from, { text: "⏳ جاري تجهيز الصوت..." }, { quoted: mek });
                     type = { audio: { url: downloadUrl }, mimetype: "audio/mpeg" };
                 } else if (userReply === "1.2") {
-                    msg = await conn.sendMessage(from, { text: "⏳ Processing..." }, { quoted: mek });
+                    msg = await conn.sendMessage(from, { text: "⏳ جاري تجهيز الملف..." }, { quoted: mek });
                     type = {
                         document: { url: downloadUrl },
                         fileName: `${title}.mp3`,
@@ -89,15 +94,15 @@ cmd({
                         caption: title
                     };
                 } else {
-                    return await reply("❌ Invalid choice! Reply with 1.1 or 1.2.");
+                    return await reply("❌ الاختيار غلط! اختار 1.1 أو 1.2 يا نجم.");
                 }
 
                 await conn.sendMessage(from, type, { quoted: mek });
-                await conn.sendMessage(from, { text: '✅ Media Upload Successful ✅', edit: msg.key });
+                await conn.sendMessage(from, { text: '✅ التحميل تمام ياباشا ✅', edit: msg.key });
 
             } catch (error) {
                 console.error(error);
-                await reply(`❌ *An error occurred while processing:* ${error.message || "Error!"}`);
+                await reply(`❌ حصل خطأ:\n${error.message || "خطأ غير معروف!"}`);
             }
         };
 
@@ -106,6 +111,6 @@ cmd({
     } catch (error) {
         console.error(error);
         await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
-        await reply(`❌ *An error occurred:* ${error.message || "Error!"}`);
+        await reply(`❌ حصلت مشكله:\n${error.message || "خطأ غير معروف!"}`);
     }
 });

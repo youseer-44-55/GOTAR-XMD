@@ -1,10 +1,13 @@
 const axios = require('axios');
 const { cmd } = require('../command');
 
+// ┏━━━━━━━━━━━━━━━━━━━━┓
+// ┃  ✪『𝐋𝐔𝐂𝐈𝐅𝐄𝐑』✪ TEMPMAIL
+// ┗━━━━━━━━━━━━━━━━━━━━┛
 cmd({
-    pattern: "tempmail",
-    alias: ["genmail"],
-    desc: "Generate a new temporary email address",
+    pattern: "ايميل-وهمي",
+    alias: ["جيميل"],
+    desc: "يولد بريد مؤقت لمدة 24 ساعة",
     category: "utility",
     react: "📧",
     filename: __filename
@@ -14,7 +17,6 @@ async (conn, mek, m, { from, reply, prefix }) => {
         const response = await axios.get('https://apis.davidcyriltech.my.id/temp-mail');
         const { email, session_id, expires_at } = response.data;
 
-        // Format the expiration time and date
         const expiresDate = new Date(expires_at);
         const timeString = expiresDate.toLocaleTimeString('en-US', {
             hour: '2-digit',
@@ -28,23 +30,24 @@ async (conn, mek, m, { from, reply, prefix }) => {
             year: 'numeric'
         });
 
-        // Create the complete message
         const message = `
-📧 *TEMPORARY EMAIL GENERATED*
+┏━━━━━━ ❖ •『𝐋𝐔𝐂𝐈𝐅𝐄𝐑』• ❖ ━━━━━━┓
+📧 *تم إنشاء بريد مؤقت ليك يا نجم*
 
-✉️ *Email Address:*
+✉️ *الإيميل:*
 ${email}
 
-⏳ *Expires:*
+⏳ *هينتهي يوم:*
 ${timeString} • ${dateString}
 
-🔑 *Session ID:*
+🔑 *معرف الجلسة:*
 \`\`\`${session_id}\`\`\`
 
-📥 *Check Inbox:*
+📥 *علشان تشوف الرسائل:*
 .inbox ${session_id}
 
-_Email will expire after 24 hours_
+_⚠️ الإيميل بيعيش ٢٤ ساعة بس_
+┗━━━━━━━━━━━━━━━━━━━━┛
 `;
 
         await conn.sendMessage(
@@ -55,8 +58,8 @@ _Email will expire after 24 hours_
                     forwardingScore: 999,
                     isForwarded: true,
                     forwardedNewsletterMessageInfo: {
-                        newsletterJid: '120363401658098220@newsletter',
-                        newsletterName: '𝗚𝗢𝗧𝗔𝗥-𝗫𝗠𝗗',
+                        newsletterJid: '120363400024202153@newsletter',
+                        newsletterName: '⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠',
                         serverMessageId: 101
                     }
                 }
@@ -66,13 +69,17 @@ _Email will expire after 24 hours_
 
     } catch (e) {
         console.error('TempMail error:', e);
-        reply(`❌ Error: ${e.message}`);
+        reply(`❌ حصلت مشكلة يا نجم: ${e.message}`);
     }
 });
+
+// ┏━━━━━━━━━━━━━━━━━━━━┓
+// ┃  ✪『𝐋𝐔𝐂𝐈𝐅𝐄𝐑』✪ CHECKMAIL
+// ┗━━━━━━━━━━━━━━━━━━━━┛
 cmd({
-    pattern: "checkmail",
+    pattern: "رساله-البريد",
     alias: ["inbox", "tmail", "mailinbox"],
-    desc: "Check your temporary email inbox",
+    desc: "يشوف الرسايل اللي جات على البريد المؤقت",
     category: "utility",
     react: "📬",
     filename: __filename
@@ -80,35 +87,35 @@ cmd({
 async (conn, mek, m, { from, reply, args }) => {
     try {
         const sessionId = args[0];
-        if (!sessionId) return reply('🔑 Please provide your session ID\nExample: .checkmail YOUR_SESSION_ID');
+        if (!sessionId) return reply('🔑 هاتلي الـ session ID يا نجم\nمثال: .checkmail SESSION_ID');
 
         const inboxUrl = `https://apis.davidcyriltech.my.id/temp-mail/inbox?id=${encodeURIComponent(sessionId)}`;
         const response = await axios.get(inboxUrl);
 
         if (!response.data.success) {
-            return reply('❌ Invalid session ID or expired email');
+            return reply('❌ الـ ID دا مش شغال أو البريد انتهى خلاص');
         }
 
         const { inbox_count, messages } = response.data;
 
         if (inbox_count === 0) {
-            return reply('📭 Your inbox is empty');
+            return reply('📭 مفيش ولا رسالة يا نجم، البريد فاضي');
         }
 
-        let messageList = `📬 *You have ${inbox_count} message(s)*\n\n`;
+        let messageList = `📬 *جالك ${inbox_count} رسالة يا وحش*\n\n`;
         messages.forEach((msg, index) => {
             messageList += `━━━━━━━━━━━━━━━━━━\n` +
-                          `📌 *Message ${index + 1}*\n` +
-                          `👤 *From:* ${msg.from}\n` +
-                          `📝 *Subject:* ${msg.subject}\n` +
-                          `⏰ *Date:* ${new Date(msg.date).toLocaleString()}\n\n` +
-                          `📄 *Content:*\n${msg.body}\n\n`;
+                          `📌 *رسالة رقم ${index + 1}*\n` +
+                          `👤 *من:* ${msg.from}\n` +
+                          `📝 *العنوان:* ${msg.subject}\n` +
+                          `⏰ *التاريخ:* ${new Date(msg.date).toLocaleString()}\n\n` +
+                          `📄 *الرسالة:*\n${msg.body}\n\n`;
         });
 
         await reply(messageList);
 
     } catch (e) {
         console.error('CheckMail error:', e);
-        reply(`❌ Error checking inbox: ${e.response?.data?.message || e.message}`);
+        reply(`❌ حصلت مشكلة وإنت بتشوف البريد: ${e.response?.data?.message || e.message}`);
     }
 });
