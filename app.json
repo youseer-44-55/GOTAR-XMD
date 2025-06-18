@@ -1,14 +1,14 @@
 {
-  "name": "GOTAR-XMD",
-  "description": "Javascript WhatsApp bot made ɢᴏᴛᴀʀ ᴛᴇᴄʜ",
-  "logo": "https://files.catbox.moe/82b8gr.jpg",
+  "name": "LUCIFER",
+  "description": "Javascript WhatsApp bot made ",
+  "logo": "https://files.catbox.moe/3qt5au.jpg",
   "keywords": ["GOTAR-XMD"],
   "success_url": "/",
 
     "stack": "container",
   "env": {
     "SESSION_ID": {
-      "description": "Put the session-id here.",
+      "description": "GOTAR~XMD~D041hLwT#5wburAGLzmJx1fpUC3HJmLAF9Gj8MEjiGEShpA55_L0",
       "required": true,
       "value": ""
     },  
@@ -16,7 +16,7 @@
     "STICKER_NAME": {
       "description": "type your sticker pack name.",
       "required": false,
-      "value": "𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃"
+      "value": "⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠"
     }, 
       
     "PREFIX": {
@@ -79,27 +79,27 @@
     "AUTO_STATUS_MSG": {
       "description": "Type custom message on status reply",
       "required": true,
-      "value": "*SEEN YOUR STATUS BY 𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃 🖤*"
+      "value": "*SEEN YOUR STATUS BY LUCIFER 🖤*"
    
      }, 
     
     "OWNER_NAME": {
       "description": "Type Bot Owner Name.",
       "required": false,
-      "value": "YOUR NAME"
+      "value": "⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠"
 }, 
 
     "OWNER_NUMBER": {
       "description": "put the owner number for bot.",
       "required": false,
-      "value": "509xxxxxx"
+      "value": "201501728150"
 
     }, 
 
     "BOT_NAME": {
       "description": "Type here the bot name.",
       "required": false,
-      "value": "𝐆𝐎𝐓𝐀𝐑 𝐗𝐌𝐃"
+      "value": "⎝⎝⛥ 𝐋𝐔𝐂𝐈𝐅𝐄𝐑 ⛥⎠⎠"
 
       }, 
 
@@ -132,13 +132,13 @@
     "MENU_IMAGE_URL": {
       "description": "add url for mention reply and menu if want.",
       "required": false,
-      "value": "https://files.catbox.moe/82b8gr.jpg"
+      "value": 'https://files.catbox.moe/3qt5au.jpg"
     },
     
      "DESCRIPTION": {
       "description": "add caption for menu and other",
       "required": false,
-      "value": "> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ ɢᴏᴛᴀʀ ᴛᴇᴄʜ*"
+      "value": "> *✪『𝙇𝙐𝘾𝙄𝙁𝙀𝙍』✪*"
     },
 
       "DELETE_LINKS": {
